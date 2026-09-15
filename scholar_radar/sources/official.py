@@ -14,6 +14,7 @@ from .filters import is_blocked_url
 log = logging.getLogger(__name__)
 
 MAX_FOLLOW_PER_PAGE = 10
+MIN_PAGE_CHARS = 200
 
 
 def discover_official(pages: list[dict[str, Any]], fetcher: Fetcher, state: State,
@@ -23,9 +24,12 @@ def discover_official(pages: list[dict[str, Any]], fetcher: Fetcher, state: Stat
     errors: list[str] = []
     for cfg in pages:
         url, name = cfg["url"], cfg.get("name", cfg["url"])
-        page = fetcher.fetch_page(url)
+        page = fetcher.fetch_page(url, verify=cfg.get("verify_ssl", True))
         if page is None:
             errors.append(f"{name}: could not fetch {url}")
+            continue
+        if len(page.text) < MIN_PAGE_CHARS:
+            errors.append(f"{name}: page has almost no text (probably needs JavaScript)")
             continue
 
         if state.page_changed(url, content_hash(page.text), today):

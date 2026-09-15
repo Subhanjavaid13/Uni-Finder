@@ -228,7 +228,7 @@ def build_html(data: ReportData) -> str:
     for d in data.demand:
         count = len(d.needed_by)
         track = " (IELTS track)" if d.item.track == "ielts" else ""
-        needed = f"{count} of your matches" if count else "recommended"
+        needed = f"{count} of your match{'es' if count != 1 else ''}" if count else "recommended"
         rows += (f'<tr style="border-top:1px solid #e5e7eb;vertical-align:top"><td style="padding:6px">'
                  f'<b>{_e(d.item.name)}</b>{_e(track)}<br><span style="color:#6b7280">{_e(d.item.why)}</span></td>'
                  f'<td style="padding:6px;white-space:nowrap">{_e(needed)}</td>'
@@ -315,7 +315,8 @@ def build_text(data: ReportData) -> str:
         out += [f"- {r.opportunity.title}: around {fmt_date(r.opportunity.opens)}" for r in data.opening_soon[:limit]]
     out += ["", "== DOCUMENTS YOU NEED =="]
     for d in data.demand:
-        out.append(f"- {d.item.name} ({len(d.needed_by)} matches): {d.item.how}")
+        count = len(d.needed_by)
+        out.append(f"- {d.item.name} ({count} match{'es' if count != 1 else ''}): {d.item.how}")
     if data.later:
         out += ["", "== FOR LATER =="]
         out += [f"- {r.opportunity.title}: {'; '.join(r.exclusions)}" for r in data.later[:limit]]

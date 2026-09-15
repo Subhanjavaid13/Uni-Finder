@@ -12,6 +12,7 @@ from scholar_radar.pipeline import RunOptions, run
 from scholar_radar.store import State
 
 TODAY = date(2026, 9, 15)
+TB_PAGE = "Turkiye Scholarships applications 2027. " * 10
 
 
 class FakeFetcher:
@@ -20,7 +21,7 @@ class FakeFetcher:
     def __init__(self, pages):
         self.pages = pages
 
-    def fetch_page(self, url):
+    def fetch_page(self, url, verify=True):
         text = self.pages.get(url)
         return Page(url=url, title="Official", text=text) if text else None
 
@@ -66,7 +67,7 @@ def test_official_page_verifies_seed_deadline(settings):
          "evidence": "Applications close 18 February 2027"}]})
     options = RunOptions(dry_run=True, save_state=True, use_rss=False, use_search=False)
     summary = run(settings, options, today=TODAY, llm=llm,
-                  fetcher=FakeFetcher({"https://tb.example": "Turkiye Scholarships applications 2027"}))
+                  fetcher=FakeFetcher({"https://tb.example": TB_PAGE}))
     assert llm.calls == 1
     state = State(settings.state_path)
     tb = next(o for o in state.all_opportunities() if o.seed_key == "turkiye_burslari")
@@ -75,8 +76,26 @@ def test_official_page_verifies_seed_deadline(settings):
 
     # Unchanged page next week -> no AI call
     run(settings, options, today=date(2026, 9, 22), llm=llm,
-        fetcher=FakeFetcher({"https://tb.example": "Turkiye Scholarships applications 2027"}))
+        fetcher=FakeFetcher({"https://tb.example": TB_PAGE}))
     assert llm.calls == 1
+
+
+def test_keyword_mode_never_overwrites_seed_facts(settings):
+    page = ("Turkiye Scholarships fully funded master scholarship. No fee. "
+            "Deadline: 1 October 2026. " + "More details about the programme. " * 10)
+    options = RunOptions(dry_run=True, save_state=True, use_rss=False, use_search=False, use_ai=False)
+    run(settings, options, today=TODAY, fetcher=FakeFetcher({"https://tb.example": page}))
+    tb = next(o for o in State(settings.state_path).all_opportunities() if o.seed_key == "turkiye_burslari")
+    assert tb.deadline_is_estimate is True and not tb.verified
+
+
+def test_near_empty_official_page_is_reported_not_analysed(settings):
+    llm = FakeLLM({"is_scholarship_page": False})
+    options = RunOptions(dry_run=True, use_rss=False, use_search=False)
+    summary = run(settings, options, today=TODAY, llm=llm,
+                  fetcher=FakeFetcher({"https://tb.example": "Loading..."}))
+    assert llm.calls == 0
+    assert any("almost no text" in e for e in summary.errors)
 
 
 def test_real_run_without_email_config_fails_and_keeps_state_unsaved(settings):

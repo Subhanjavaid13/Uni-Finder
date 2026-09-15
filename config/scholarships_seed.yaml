@@ -75,7 +75,6 @@ scholarships:
     funding_level: "full"
     covers_tuition: true
     stipend: true
-    stipend_amount: "monthly stipend"
     housing: true
     travel: true
     insurance: true
@@ -132,7 +131,6 @@ scholarships:
     funding_level: "full"
     covers_tuition: true
     stipend: true
-    stipend_amount: "monthly stipend"
     housing: true
     travel: false
     insurance: true
@@ -161,7 +159,6 @@ scholarships:
     funding_level: "full"
     covers_tuition: true
     stipend: true
-    stipend_amount: "monthly stipend"
     housing: false
     travel: true
     insurance: false
@@ -190,7 +187,6 @@ scholarships:
     funding_level: "full"
     covers_tuition: true
     stipend: true
-    stipend_amount: "monthly stipend"
     housing: true
     travel: true
     insurance: true

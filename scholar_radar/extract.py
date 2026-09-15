@@ -181,6 +181,13 @@ DEADLINE_RE = re.compile(
     r"deadline[^.\n]{0,40}?((?:\d{1,2}(?:st|nd|rd|th)?\s+)?[A-Z][a-z]{2,8}\.?\s+(?:\d{1,2}(?:st|nd|rd|th)?,?\s+)?(?:19|20)\d{2})",
     re.IGNORECASE,
 )
+HOUSING_RE = re.compile(
+    r"(free|provided|covered|included)\s+(accommodation|housing|dormitory)"
+    r"|(accommodation|housing|dormitory)\s+(is\s+|are\s+)?(provided|covered|included|free)"
+)
+TUITION_RE = re.compile(
+    r"tuition(\s+fees?)?\s+(waiver|waived|covered|exemption)|full\s+tuition|free\s+tuition"
+)
 FIELD_WORDS = {
     "Artificial Intelligence": ["artificial intelligence"],
     "Computer Science": ["computer science", "computing"],
@@ -221,9 +228,9 @@ def heuristic_extract(candidate: Candidate) -> list[Opportunity]:
         degree_level="masters" if re.search(r"\bmaster|\bmsc\b|\bm\.sc", low) else None,
         fields=[name for name, words in FIELD_WORDS.items() if any(w in low for w in words)],
         funding_level="full" if fully_funded else "unknown",
-        covers_tuition=True if fully_funded or "tuition" in low else None,
+        covers_tuition=True if fully_funded or TUITION_RE.search(low) else None,
         stipend=True if ("stipend" in low or "monthly allowance" in low) else None,
-        housing=True if ("accommodation" in low or "housing" in low) else None,
+        housing=True if HOUSING_RE.search(low) else None,
         application_fee=fee,
         deadline=deadline,
         ielts_required=ielts_required,

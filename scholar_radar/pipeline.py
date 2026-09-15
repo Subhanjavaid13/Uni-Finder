@@ -120,6 +120,9 @@ def run(settings: Settings, options: RunOptions, today: date | None = None,
             skipped += 1
             continue
 
+        if cand.seed_key in seed_by_key and llm is None:
+            # Keyword guesses are too rough to overwrite curated seed facts; wait for AI mode.
+            continue
         found_opps = extract_opportunities(cand, llm, today)
         analysed += 1
         if cand.seed_key in seed_by_key and len(found_opps) == 1:

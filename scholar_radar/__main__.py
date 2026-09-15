@@ -70,7 +70,7 @@ def cmd_check_sources(_: argparse.Namespace) -> int:
     failures = 0
     print("Official pages:")
     for cfg in settings.sources.official_pages:
-        page = fetcher.fetch_page(cfg["url"])
+        page = fetcher.fetch_page(cfg["url"], verify=cfg.get("verify_ssl", True))
         ok = page is not None and len(page.text) > 200
         failures += not ok
         detail = f"{len(page.text)} chars" if page else "unreachable / blocked"

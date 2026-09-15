@@ -7,6 +7,8 @@
 #    only re-analyses it with AI when the page content changes (e.g. "applications open").
 #    seed_key: links the page to an entry in scholarships_seed.yaml so real dates replace estimates.
 #    follow_links: also analyse links on the page whose text contains these words.
+#    Some sites (Campus China, MBZUAI, DAAD from some networks) block automated requests;
+#    they are skipped with a note in the report and their seed entries still remind you.
 official_pages:
   - name: "Erasmus Mundus Catalogue"
     url: "https://www.eacea.ec.europa.eu/scholarships/erasmus-mundus-catalogue_en"
@@ -47,6 +49,7 @@ official_pages:
   - name: "HEC Pakistan Scholarships"
     url: "https://www.hec.gov.pk/english/scholarshipsgrants/Pages/default.aspx"
     country: "Pakistan (study abroad)"
+    verify_ssl: false  # HEC's server sends an incomplete certificate chain; public read-only page
   - name: "Swedish Institute Scholarships"
     url: "https://si.se/en/apply/scholarships/"
     country: "Sweden"
@@ -82,8 +85,12 @@ rss_feeds:
     url: "https://opportunitydesk.org/feed/"
   - name: "Opportunities For Youth"
     url: "https://opportunitiesforyouth.org/feed/"
-  - name: "Scholarship Positions"
-    url: "https://scholarship-positions.com/feed/"
+  - name: "Scholarships Corner"
+    url: "https://scholarshipscorner.website/feed/"
+  - name: "Opportunities Corners"
+    url: "https://opportunitiescorners.com/feed/"
+  - name: "Scholarship Roar"
+    url: "https://www.scholarshiproar.com/feed/"
   - name: "Greatyop"
     url: "https://greatyop.com/feed/"
 

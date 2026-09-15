@@ -26,7 +26,7 @@ class FakeLLM(BaseLLM):
 def cand(**kw):
     base = dict(url="https://uni.example/msc-ai", title="MSc AI", source="search",
                 text="Fully funded master scholarship in Artificial Intelligence. "
-                     "Monthly stipend and accommodation. No application fee. "
+                     "Monthly stipend and free accommodation. No application fee. "
                      "IELTS not required. Application deadline: 15 January 2027.")
     base.update(kw)
     return Candidate(**base)
@@ -85,3 +85,5 @@ def test_heuristic_extract():
     assert opp.degree_level == "masters"
     assert "Artificial Intelligence" in opp.fields
     assert heuristic_extract(cand(title="Cooking class", text="Learn to bake bread")) == []
+    [vague] = heuristic_extract(cand(text="Scholarship info. Housing is not included. Tuition fees apply."))
+    assert vague.housing is None and vague.covers_tuition is None

@@ -9,6 +9,7 @@ from urllib import robotparser
 from urllib.parse import urljoin, urlparse
 
 import requests
+import urllib3
 from bs4 import BeautifulSoup
 
 log = logging.getLogger(__name__)
@@ -80,14 +81,17 @@ class Fetcher:
             time.sleep(self.per_host_delay - elapsed)
         self._last_hit[host] = time.monotonic()
 
-    def get(self, url: str, retries: int = 2) -> requests.Response | None:
+    def get(self, url: str, retries: int = 2, verify: bool = True) -> requests.Response | None:
+        """verify=False is only for public pages whose server sends a broken certificate chain."""
         if not self.allowed(url):
             log.info("robots.txt disallows %s - skipping", url)
             return None
+        if not verify:
+            urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         for attempt in range(retries + 1):
             self._wait_for_host(url)
             try:
-                resp = self.session.get(url, timeout=self.timeout)
+                resp = self.session.get(url, timeout=self.timeout, verify=verify)
                 if resp.status_code == 200:
                     return resp
                 if resp.status_code in (429, 500, 502, 503, 504) and attempt < retries:
@@ -102,8 +106,8 @@ class Fetcher:
                 time.sleep(2 * (attempt + 1))
         return None
 
-    def fetch_page(self, url: str) -> Page | None:
-        resp = self.get(url)
+    def fetch_page(self, url: str, verify: bool = True) -> Page | None:
+        resp = self.get(url, verify=verify)
         if resp is None:
             return None
         content_type = resp.headers.get("Content-Type", "")
