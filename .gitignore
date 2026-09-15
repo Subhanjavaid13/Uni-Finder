@@ -12,6 +12,10 @@ venv/
 # Generated reports (the state file in data/ IS committed so the agent remembers)
 output/
 
+# Private research data and generated spreadsheets - keep local only
+research/
+*.xlsx
+
 # Editors / OS
 .vscode/
 .idea/
