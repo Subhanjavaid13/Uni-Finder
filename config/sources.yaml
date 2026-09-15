@@ -1,0 +1,146 @@
+# ------------------------------------------------------------------
+# WHERE THE AGENT LOOKS. Add or remove sources freely.
+# Run `python -m scholar_radar check-sources` to test every URL.
+# ------------------------------------------------------------------
+
+# 1) Official scholarship pages. The agent saves a fingerprint of each page and
+#    only re-analyses it with AI when the page content changes (e.g. "applications open").
+#    seed_key: links the page to an entry in scholarships_seed.yaml so real dates replace estimates.
+#    follow_links: also analyse links on the page whose text contains these words.
+official_pages:
+  - name: "Erasmus Mundus Catalogue"
+    url: "https://www.eacea.ec.europa.eu/scholarships/erasmus-mundus-catalogue_en"
+    country: "European Union"
+    seed_key: "erasmus_mundus"
+    follow_links: ["artificial intelligence", "computer", "data science", "machine learning", "informatics", "software", "cyber"]
+  - name: "DAAD Scholarship Database"
+    url: "https://www2.daad.de/deutschland/stipendium/datenbank/en/21148-scholarship-database/"
+    country: "Germany"
+  - name: "Stipendium Hungaricum"
+    url: "https://stipendiumhungaricum.hu/"
+    country: "Hungary"
+    seed_key: "stipendium_hungaricum"
+  - name: "Turkiye Burslari"
+    url: "https://www.turkiyeburslari.gov.tr/"
+    country: "Turkey"
+    seed_key: "turkiye_burslari"
+  - name: "Study in Korea (GKS)"
+    url: "https://www.studyinkorea.go.kr/"
+    country: "South Korea"
+    seed_key: "gks"
+  - name: "Campus China (CSC)"
+    url: "https://www.campuschina.org/"
+    country: "China"
+    seed_key: "csc"
+  - name: "Study in Japan (MEXT)"
+    url: "https://www.studyinjapan.go.jp/en/"
+    country: "Japan"
+    seed_key: "mext"
+  - name: "Chevening"
+    url: "https://www.chevening.org/scholarships/"
+    country: "United Kingdom"
+    seed_key: "chevening"
+  - name: "Commonwealth Scholarships"
+    url: "https://cscuk.fcdo.gov.uk/scholarships/"
+    country: "United Kingdom"
+    seed_key: "commonwealth"
+  - name: "HEC Pakistan Scholarships"
+    url: "https://www.hec.gov.pk/english/scholarshipsgrants/Pages/default.aspx"
+    country: "Pakistan (study abroad)"
+  - name: "Swedish Institute Scholarships"
+    url: "https://si.se/en/apply/scholarships/"
+    country: "Sweden"
+    seed_key: "swedish_institute"
+  - name: "Eiffel Excellence Scholarship"
+    url: "https://www.campusfrance.org/en/eiffel-scholarship-program-of-excellence"
+    country: "France"
+  - name: "VLIR-UOS Scholarships"
+    url: "https://www.vliruos.be/en/scholarships"
+    country: "Belgium"
+  - name: "KAUST Admissions"
+    url: "https://admissions.kaust.edu.sa/"
+    country: "Saudi Arabia"
+    seed_key: "kaust"
+  - name: "MBZUAI Admissions"
+    url: "https://mbzuai.ac.ae/"
+    country: "United Arab Emirates"
+    seed_key: "mbzuai"
+  - name: "IsDB Scholarships"
+    url: "https://www.isdb.org/scholarships"
+    country: "Multiple"
+    seed_key: "isdb"
+  - name: "USEFP Fulbright Pakistan"
+    url: "https://www.usefp.org/"
+    country: "United States"
+    seed_key: "fulbright"
+
+# 2) RSS feeds from scholarship news sites: global discovery, free, no API key.
+rss_feeds:
+  - name: "Scholars4Dev"
+    url: "https://www.scholars4dev.com/feed/"
+  - name: "Opportunity Desk"
+    url: "https://opportunitydesk.org/feed/"
+  - name: "Opportunities For Youth"
+    url: "https://opportunitiesforyouth.org/feed/"
+  - name: "Scholarship Positions"
+    url: "https://scholarship-positions.com/feed/"
+  - name: "Greatyop"
+    url: "https://greatyop.com/feed/"
+
+# 3) Web search: finds universities and scholarships that are not in any list above.
+#    {field}, {year} and {country} are filled in automatically. Countries rotate each
+#    week so the whole world gets covered over time without hitting free-tier limits.
+search:
+  enabled: true
+  max_results_per_query: 8
+  queries_per_run: 12
+  countries_per_run: 6
+  queries:
+    - "fully funded masters {field} scholarship {year} international students"
+    - "{field} masters scholarship {year} stipend accommodation no application fee"
+    - "masters {field} scholarship {year} no IELTS medium of instruction accepted"
+    - "fully funded {field} masters scholarship for Pakistani students {year}"
+  country_queries:
+    - "fully funded masters scholarship {country} {year} international students {field}"
+  countries:
+    - Germany
+    - Netherlands
+    - Belgium
+    - France
+    - Italy
+    - Spain
+    - Portugal
+    - Austria
+    - Switzerland
+    - Sweden
+    - Finland
+    - Norway
+    - Denmark
+    - Ireland
+    - Poland
+    - Czech Republic
+    - Hungary
+    - Estonia
+    - United Kingdom
+    - Turkey
+    - South Korea
+    - Japan
+    - China
+    - Taiwan
+    - Hong Kong
+    - Singapore
+    - Malaysia
+    - Brunei
+    - Saudi Arabia
+    - United Arab Emirates
+    - Qatar
+    - United States
+    - Canada
+    - Australia
+    - New Zealand
+
+# Cheap keyword filter applied BEFORE spending AI calls on a page.
+# A page must contain at least one word from each list.
+relevance_keywords:
+  funding: ["scholarship", "fully funded", "fully-funded", "stipend", "fellowship", "tuition waiver", "grant"]
+  level: ["master", "msc", "m.sc", "postgraduate", "graduate", "ms "]

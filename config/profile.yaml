@@ -1,0 +1,51 @@
+# ------------------------------------------------------------------
+# YOUR PROFILE - the agent matches every scholarship against this.
+# Edit freely; no code changes needed.
+# ------------------------------------------------------------------
+
+name: "Your Name"
+nationality: "Pakistan"
+
+education:
+  degree: "BS Computer Science"
+  university: "Virtual University of Pakistan"
+  cgpa: 3.1
+  cgpa_scale: 4.0
+  expected_graduation: "2027-06"
+  medium_of_instruction: "English"   # ask VU for an MOI letter
+
+target:
+  degree_level: "masters"
+  # A scholarship matches if its fields mention any of these (or "all fields").
+  fields:
+    - "Computer Science"
+    - "Artificial Intelligence"
+    - "Machine Learning"
+    - "Data Science"
+    - "Software Engineering"
+    - "Informatics"
+  intake_years: [2027, 2028]
+  # "any" = search worldwide. Preferred regions get a small score bonus.
+  countries: "any"
+  preferred_regions: ["Europe"]
+  excluded_countries: []
+
+english:
+  has_moi_letter: true
+  ielts_score: null           # e.g. 6.5 once you have it
+  plan_to_take_ielts: true    # true = also show scholarships that need IELTS/TOEFL
+  prefer_no_ielts: true       # no-IELTS scholarships are ranked higher
+
+work_experience_years: 0
+
+requirements:
+  funding: "full"             # "full" = tuition + living stipend must be covered
+  require_stipend: true
+  prefer_housing: true
+  application_fee: "none"     # "none" = hide scholarships that charge an application fee
+  include_unknown_fee: true   # show "fee unknown" results under "verify" instead of hiding
+
+email:
+  send_when_empty: true       # send the weekly email even if nothing new was found
+  max_items_per_section: 15
+  reminder_days: [30, 14, 7, 3]
