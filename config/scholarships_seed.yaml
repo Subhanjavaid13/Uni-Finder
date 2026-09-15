@@ -1,0 +1,418 @@
+# ------------------------------------------------------------------
+# SEED DATABASE: well-known fully funded scholarships that come back every year.
+#
+# These let the agent send reminders from day one, even before it has read a
+# single web page. Dates here are ESTIMATES based on past years
+# (deadline_is_estimate: true). When the agent reads the official page and finds
+# the real date, it replaces the estimate. ALWAYS confirm on the official website.
+#
+# null = not known / depends on the programme -> shown as "verify".
+# ------------------------------------------------------------------
+
+scholarships:
+  - title: "Erasmus Mundus Joint Master Scholarships"
+    provider: "European Commission (EACEA)"
+    country: "European Union (study in 2-3 countries)"
+    url: "https://www.eacea.ec.europa.eu/scholarships/erasmus-mundus-catalogue_en"
+    degree_level: "masters"
+    fields: ["Artificial Intelligence", "Computer Science", "Data Science", "Cybersecurity", "all fields"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    stipend_amount: "about EUR 1,400/month"
+    housing: false
+    travel: true
+    insurance: true
+    application_fee: "none"
+    ielts_required: null
+    moi_accepted: null
+    english_notes: "Depends on the programme. Several accept an English-medium bachelor's (MOI letter); others want IELTS 6.5 / TOEFL."
+    work_experience_years: 0
+    pakistan_eligible: true
+    opens: "2026-10-15"
+    deadline: "2027-01-15"
+    deadline_is_estimate: true
+    typical_window: "Most programmes open Oct-Nov and close Dec-Feb for a September start."
+    intake: "September 2027"
+    required_documents: ["Passport", "Transcripts", "Degree certificate or expected graduation letter", "Europass CV", "Motivation letter", "2 recommendation letters", "English proof (IELTS/TOEFL or MOI letter)", "Proof of residence"]
+    summary: "Top EU scholarship. Each joint programme (e.g. AI, Data Science, Cybersecurity) runs its own application. Apply to up to 3 programmes."
+    seed_key: "erasmus_mundus"
+
+  - title: "Stipendium Hungaricum Scholarship"
+    provider: "Tempus Public Foundation, Hungary"
+    country: "Hungary"
+    url: "https://stipendiumhungaricum.hu/"
+    degree_level: "masters"
+    fields: ["Computer Science", "Artificial Intelligence", "Data Science", "all fields"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    stipend_amount: "monthly stipend (modest - check current amount)"
+    housing: true
+    travel: false
+    insurance: true
+    application_fee: "none"
+    ielts_required: null
+    moi_accepted: null
+    english_notes: "Set by each university. Many accept an MOI letter; some require IELTS/TOEFL or an online interview/test."
+    work_experience_years: 0
+    pakistan_eligible: true
+    opens: "2026-11-01"
+    deadline: "2027-01-15"
+    deadline_is_estimate: true
+    typical_window: "Usually opens Nov, closes mid-January. HEC Pakistan is the nominating partner."
+    intake: "September 2027"
+    required_documents: ["Passport", "Transcripts", "Degree certificate or expected graduation letter", "Motivation letter", "2 recommendation letters", "English proof (IELTS/TOEFL or MOI letter)", "Medical certificate", "Nomination via HEC"]
+    summary: "Hungarian government scholarship; apply online (DreamApply) and complete the HEC nomination step. Stipend is low but tuition + dorm are covered."
+    seed_key: "stipendium_hungaricum"
+
+  - title: "Turkiye Burslari (Turkiye Scholarships) - Master's"
+    provider: "Government of Turkiye (YTB)"
+    country: "Turkey"
+    url: "https://www.turkiyeburslari.gov.tr/"
+    degree_level: "masters"
+    fields: ["Computer Science", "Artificial Intelligence", "all fields"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    stipend_amount: "monthly stipend"
+    housing: true
+    travel: true
+    insurance: true
+    application_fee: "none"
+    ielts_required: false
+    moi_accepted: true
+    english_notes: "No IELTS needed to apply. Includes a one-year Turkish language course."
+    work_experience_years: 0
+    pakistan_eligible: true
+    opens: "2027-01-10"
+    deadline: "2027-02-20"
+    deadline_is_estimate: true
+    typical_window: "Usually opens early January, closes around 20 February."
+    intake: "September 2027"
+    required_documents: ["Passport or national ID", "Photo", "Transcripts", "Degree certificate or expected graduation letter", "Statement of purpose", "Research proposal (for some programmes)", "Recommendation letters (optional)"]
+    summary: "Covers everything including flight tickets. Very accessible for Pakistani students; interview stage after shortlisting."
+    seed_key: "turkiye_burslari"
+
+  - title: "Global Korea Scholarship (GKS) - Graduate"
+    provider: "NIIED, Government of South Korea"
+    country: "South Korea"
+    url: "https://www.studyinkorea.go.kr/"
+    degree_level: "masters"
+    fields: ["Computer Science", "Artificial Intelligence", "all fields"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    stipend_amount: "monthly stipend + settlement allowance"
+    housing: false
+    travel: true
+    insurance: true
+    application_fee: "none"
+    ielts_required: false
+    moi_accepted: true
+    english_notes: "Not required. TOPIK (Korean) or TOEFL/IELTS scores give bonus points."
+    min_gpa: "80% or 2.64/4.0 (check guidelines)"
+    work_experience_years: 0
+    pakistan_eligible: true
+    opens: "2027-02-01"
+    deadline: "2027-03-15"
+    deadline_is_estimate: true
+    typical_window: "Guidelines published Feb; embassy and university tracks close Feb-Mar."
+    intake: "September 2027 (after 1-year Korean course)"
+    required_documents: ["Application form", "Personal statement", "Study plan", "2 recommendation letters", "Transcripts", "Degree certificate (apostilled/attested)", "Passport", "Health certificate"]
+    summary: "Excellent package with a one-year Korean language course first. Apply through the Korean Embassy in Pakistan or directly to a university."
+    seed_key: "gks"
+
+  - title: "Chinese Government Scholarship (CSC)"
+    provider: "China Scholarship Council"
+    country: "China"
+    url: "https://www.campuschina.org/"
+    degree_level: "masters"
+    fields: ["Computer Science", "Artificial Intelligence", "all fields"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    stipend_amount: "monthly stipend"
+    housing: true
+    travel: false
+    insurance: true
+    application_fee: "varies"
+    application_fee_amount: "CSC portal is free; some universities charge their own fee"
+    ielts_required: false
+    moi_accepted: true
+    english_notes: "English-taught programmes usually accept an MOI letter."
+    work_experience_years: 0
+    pakistan_eligible: true
+    opens: "2026-12-01"
+    deadline: "2027-03-31"
+    deadline_is_estimate: true
+    typical_window: "Usually Dec-Apr; each university sets its own deadline."
+    intake: "September 2027"
+    required_documents: ["CSC application form", "Notarized degree and transcripts", "Study plan", "2 recommendation letters", "Foreigner physical examination form", "Police character certificate", "Passport", "Pre-admission letter (optional, helps)"]
+    summary: "Apply via the university route (Type B) or the Chinese Embassy (Type A). Contact professors early for acceptance letters."
+    seed_key: "csc"
+
+  - title: "MEXT Japanese Government Scholarship (Embassy Recommendation)"
+    provider: "Ministry of Education, Japan"
+    country: "Japan"
+    url: "https://www.studyinjapan.go.jp/en/"
+    degree_level: "masters"
+    fields: ["Computer Science", "Artificial Intelligence", "all fields"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    stipend_amount: "monthly stipend"
+    housing: false
+    travel: true
+    insurance: false
+    application_fee: "none"
+    ielts_required: false
+    moi_accepted: true
+    english_notes: "No IELTS; screening includes written exams (English/Japanese) and an interview."
+    work_experience_years: 0
+    pakistan_eligible: true
+    opens: "2027-04-01"
+    deadline: "2027-05-15"
+    deadline_is_estimate: true
+    typical_window: "Embassy of Japan in Pakistan usually announces around April-May, for the following year's start."
+    intake: "April/October 2028"
+    required_documents: ["Application form", "Field of study and research plan", "Transcripts", "Degree certificate", "Recommendation letter", "Medical certificate", "Thesis/final year project abstract", "Passport"]
+    summary: "Starts as a research student then moves into a master's. Strong research plan matters most."
+    seed_key: "mext"
+
+  - title: "KAUST Fellowship - MS in Computer Science / AI"
+    provider: "King Abdullah University of Science and Technology"
+    country: "Saudi Arabia"
+    url: "https://admissions.kaust.edu.sa/"
+    university: "KAUST"
+    degree_level: "masters"
+    fields: ["Computer Science", "Artificial Intelligence", "Machine Learning", "Data Science"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    stipend_amount: "monthly stipend"
+    housing: true
+    travel: true
+    insurance: true
+    application_fee: "none"
+    ielts_required: true
+    moi_accepted: null
+    english_notes: "IELTS/TOEFL normally required; check whether a waiver applies."
+    min_gpa: "Competitive - strong GPA and projects expected"
+    work_experience_years: 0
+    pakistan_eligible: true
+    opens: "2026-09-01"
+    deadline: "2027-01-15"
+    deadline_is_estimate: true
+    typical_window: "Several application rounds, usually between December and March for an August start."
+    intake: "August 2027"
+    required_documents: ["Online application", "Transcripts", "Degree certificate or expected graduation letter", "Statement of purpose", "CV", "3 recommendation letters", "English proof (IELTS/TOEFL)"]
+    summary: "Every admitted student receives the fellowship. Very competitive; your AI/automation portfolio helps a lot."
+    seed_key: "kaust"
+
+  - title: "MBZUAI MSc in Machine Learning / Computer Vision / NLP"
+    provider: "Mohamed bin Zayed University of Artificial Intelligence"
+    country: "United Arab Emirates"
+    url: "https://mbzuai.ac.ae/"
+    university: "MBZUAI"
+    degree_level: "masters"
+    fields: ["Artificial Intelligence", "Machine Learning", "Computer Vision", "Natural Language Processing"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    housing: true
+    travel: null
+    insurance: true
+    application_fee: "unknown"
+    ielts_required: null
+    moi_accepted: null
+    english_notes: "Check the admissions page for English requirements and waivers."
+    work_experience_years: 0
+    pakistan_eligible: true
+    deadline: null
+    deadline_is_estimate: true
+    typical_window: "Check the admissions page - usually several rounds before the fall intake."
+    intake: "Fall 2027"
+    required_documents: ["Online application", "Transcripts", "Statement of purpose", "CV", "Recommendation letters", "English proof"]
+    summary: "AI-focused university in Abu Dhabi offering full scholarships with stipend and accommodation to admitted students (verify current terms)."
+    seed_key: "mbzuai"
+
+  - title: "Italy Regional Scholarships (DSU: DiSCo Lazio, EDISU Piemonte, ER.GO...)"
+    provider: "Italian regional student-support agencies"
+    country: "Italy"
+    url: "https://www.laziodisco.it/"
+    degree_level: "masters"
+    fields: ["Computer Science", "Artificial Intelligence", "Data Science", "all fields"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    stipend_amount: "roughly EUR 5,000-7,000/year (need-based)"
+    housing: null
+    travel: false
+    insurance: false
+    application_fee: "varies"
+    application_fee_amount: "Some Italian universities charge EUR 0-100 to apply"
+    ielts_required: null
+    moi_accepted: null
+    english_notes: "Set by each university; many Italian universities accept an MOI letter."
+    work_experience_years: 0
+    pakistan_eligible: true
+    deadline: null
+    deadline_is_estimate: true
+    typical_window: "University applications Jan-May; regional scholarship applications usually Jul-Sep."
+    intake: "September 2027"
+    required_documents: ["University admission", "ISEE parificato family income documents (attested by Italian Embassy)", "Family Registration Certificate (NADRA)", "Transcripts", "Passport"]
+    summary: "Need-based; very popular with Pakistani students. Italian visa appointments from Pakistan can be slow - start early."
+    seed_key: "italy_dsu"
+
+  - title: "Chevening Scholarship"
+    provider: "UK Government (FCDO)"
+    country: "United Kingdom"
+    url: "https://www.chevening.org/scholarships/"
+    degree_level: "masters"
+    fields: ["all fields"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    housing: false
+    travel: true
+    insurance: false
+    application_fee: "none"
+    ielts_required: true
+    moi_accepted: null
+    english_notes: "Must meet your UK university's English requirement (often IELTS)."
+    work_experience_years: 2
+    pakistan_eligible: true
+    opens: "2026-08-05"
+    deadline: "2026-11-04"
+    deadline_is_estimate: true
+    typical_window: "Usually opens early August, closes early November."
+    intake: "September 2027"
+    required_documents: ["Online application with 4 essays", "Transcripts", "Degree certificate", "2 references", "Applications to 3 UK universities", "Passport", "English proof"]
+    summary: "Needs about 2 years (2,800 hours) of work experience. Keep for later once you have job experience."
+    seed_key: "chevening"
+
+  - title: "DAAD EPOS - Development-Related Postgraduate Courses"
+    provider: "DAAD Germany"
+    country: "Germany"
+    url: "https://www2.daad.de/deutschland/stipendium/datenbank/en/21148-scholarship-database/"
+    degree_level: "masters"
+    fields: ["Engineering", "Economics", "Public Health", "Information and Communication Technology (few courses)"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    housing: false
+    travel: true
+    insurance: true
+    application_fee: "none"
+    ielts_required: null
+    moi_accepted: null
+    work_experience_years: 2
+    pakistan_eligible: true
+    deadline: null
+    deadline_is_estimate: true
+    typical_window: "Each course sets its own deadline, typically Aug-Oct for the following year."
+    required_documents: ["DAAD application form", "Europass CV", "Motivation letter", "Recommendation letter", "Employer letter", "Transcripts", "Language certificates"]
+    summary: "Requires at least 2 years of professional experience. Keep for later."
+    seed_key: "daad_epos"
+
+  - title: "Commonwealth Master's Scholarships"
+    provider: "Commonwealth Scholarship Commission (via HEC nomination)"
+    country: "United Kingdom"
+    url: "https://cscuk.fcdo.gov.uk/scholarships/"
+    degree_level: "masters"
+    fields: ["all fields (development-focused)"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    housing: false
+    travel: true
+    insurance: false
+    application_fee: "none"
+    ielts_required: true
+    moi_accepted: null
+    work_experience_years: 0
+    pakistan_eligible: true
+    deadline: null
+    deadline_is_estimate: true
+    typical_window: "Nominations through HEC Pakistan, usually in autumn - watch the HEC scholarships page."
+    intake: "September 2027"
+    required_documents: ["HEC nomination application", "Transcripts", "Degree certificate", "References", "Development impact statement", "English proof"]
+    summary: "Must be nominated by HEC first. Focus on how your study helps Pakistan's development."
+    seed_key: "commonwealth"
+
+  - title: "Swedish Institute Scholarships for Global Professionals"
+    provider: "Swedish Institute"
+    country: "Sweden"
+    url: "https://si.se/en/apply/scholarships/"
+    degree_level: "masters"
+    fields: ["all fields"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    housing: false
+    travel: true
+    insurance: true
+    application_fee: "required"
+    application_fee_amount: "About SEK 900 on universityadmissions.se for non-EU applicants"
+    ielts_required: true
+    moi_accepted: null
+    work_experience_years: 1.5
+    pakistan_eligible: null
+    deadline: null
+    deadline_is_estimate: true
+    typical_window: "University application usually Oct-mid Jan; SI scholarship application around Feb."
+    intake: "August 2027"
+    required_documents: ["University admission application", "Work experience proof (3,000 hours)", "Leadership experience proof", "CV", "Motivation letter", "English proof"]
+    summary: "Needs work and leadership experience plus a paid university application. Check the eligible-countries list."
+    seed_key: "swedish_institute"
+
+  - title: "IsDB Scholarship Programme (Master's in Science and Technology)"
+    provider: "Islamic Development Bank"
+    country: "Multiple"
+    url: "https://www.isdb.org/scholarships"
+    degree_level: "masters"
+    fields: ["Computer Science", "Science and Technology"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    housing: null
+    travel: true
+    insurance: true
+    application_fee: "none"
+    ielts_required: null
+    moi_accepted: null
+    work_experience_years: 0
+    pakistan_eligible: null
+    deadline: null
+    deadline_is_estimate: true
+    typical_window: "Varies each year - check the IsDB scholarships page."
+    required_documents: ["Online application", "Transcripts", "Admission letter (for some tracks)", "Passport", "Recommendation letters"]
+    summary: "Programme for students from IsDB member countries. Confirm current eligibility and open calls."
+    seed_key: "isdb"
+
+  - title: "Fulbright Foreign Student Program (Pakistan)"
+    provider: "USEFP"
+    country: "United States"
+    url: "https://www.usefp.org/"
+    degree_level: "masters"
+    fields: ["all fields"]
+    funding_level: "full"
+    covers_tuition: true
+    stipend: true
+    housing: null
+    travel: true
+    insurance: true
+    application_fee: "none"
+    ielts_required: null
+    moi_accepted: null
+    english_notes: "Test requirements (GRE/English) are set by USEFP - check the current call."
+    work_experience_years: 0
+    pakistan_eligible: true
+    eligibility_notes: "Requires 16 years of education (a 4-year BSCS qualifies)."
+    deadline: null
+    deadline_is_estimate: true
+    typical_window: "Check USEFP for the current application cycle."
+    required_documents: ["Online application", "Transcripts", "Degree certificate", "Study objectives essay", "Personal statement", "Recommendation letters", "Test scores"]
+    summary: "One of the largest Fulbright programmes in the world. Very competitive."
+    seed_key: "fulbright"
