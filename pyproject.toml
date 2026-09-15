@@ -1,0 +1,26 @@
+[project]
+name = "scholar-radar"
+version = "0.1.0"
+description = "An AI agent that finds fully funded AI/CS master's scholarships worldwide and emails you weekly."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.31",
+    "beautifulsoup4>=4.12",
+    "feedparser>=6.0",
+    "PyYAML>=6.0",
+    "python-dateutil>=2.9",
+    "ddgs>=9.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+scholar-radar = "scholar_radar.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["scholar_radar*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
