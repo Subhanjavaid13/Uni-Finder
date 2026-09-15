@@ -117,6 +117,24 @@ def cmd_queries(_: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_excel(args: argparse.Namespace) -> int:
+    from pathlib import Path
+
+    from .config import ROOT
+    from .research_excel import build_workbook
+
+    raw_dir = ROOT / "research" / "raw"
+    if not any(raw_dir.glob("*.json")):
+        print(f"No research files found in {raw_dir}", file=sys.stderr)
+        return 1
+    out = Path(args.output) if args.output else ROOT / "Europe_CS_AI_Masters_Scholarships.xlsx"
+    stats = build_workbook(raw_dir, out)
+    print(f"Excel file: {out}")
+    for key, value in stats.items():
+        print(f"  {key}: {value}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -145,6 +163,10 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("test-email", help="send a test email").set_defaults(func=cmd_test_email)
     sub.add_parser("checklist", help="print the documents you need").set_defaults(func=cmd_checklist)
     sub.add_parser("queries", help="show this week's search queries").set_defaults(func=cmd_queries)
+
+    p_excel = sub.add_parser("excel", help="build the Excel file from research/raw/*.json")
+    p_excel.add_argument("--output", help="output .xlsx path")
+    p_excel.set_defaults(func=cmd_excel)
 
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO if args.verbose else logging.WARNING,

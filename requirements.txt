@@ -4,3 +4,4 @@ feedparser>=6.0
 PyYAML>=6.0
 python-dateutil>=2.9
 ddgs>=9.0
+openpyxl>=3.1
