@@ -168,7 +168,8 @@ def run(settings: Settings, options: RunOptions, today: date | None = None,
                 continue  # already merged into the seed entry
             opp.seed_key = None  # a separate programme found on the page
             remember(opp)
-        state.mark_seen(cand.url, today)
+        if not stats.get("ai_gave_up"):
+            state.mark_seen(cand.url, today)  # else: re-read it properly next run
     stats["pages_analysed"] = analysed
     stats["pages_skipped_irrelevant"] = skipped
     stats["pages_unreadable"] = unreadable

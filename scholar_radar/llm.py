@@ -18,9 +18,17 @@ from .config import env
 
 log = logging.getLogger(__name__)
 
-GEMINI_DEFAULT_MODEL = "gemini-3.5-flash"
-# Tried in order when the chosen model is retired (404) or overloaded (503).
-GEMINI_FALLBACK_MODELS = ("gemini-flash-latest", "gemini-3.5-flash-lite", "gemini-3-flash-preview")
+# Free-tier request quotas are counted PER MODEL per day (e.g. gemini-3.5-flash allows
+# only 20/day), so the agent starts on a lite model and moves down the list as each
+# model's daily quota runs out, is retired (404) or is overloaded (503).
+GEMINI_DEFAULT_MODEL = "gemini-3.5-flash-lite"
+GEMINI_FALLBACK_MODELS = (
+    "gemini-3.1-flash-lite",
+    "gemini-3-flash-preview",
+    "gemini-3.5-flash",
+    "gemini-flash-latest",
+)
+DAILY_QUOTA = "DAILY_QUOTA"
 
 
 class LLMError(RuntimeError):
@@ -72,22 +80,49 @@ class BaseLLM:
             time.sleep(wait)
         self._last_call = time.monotonic()
 
-    def _post(self, url: str, headers: dict[str, str], body: dict[str, Any]) -> dict[str, Any]:
-        for attempt in range(4):
+    @staticmethod
+    def _quota_info(resp: requests.Response) -> tuple[bool, int | None]:
+        """(daily quota exhausted?, seconds to wait) from a 429 body."""
+        try:
+            details = resp.json().get("error", {}).get("details", [])
+        except ValueError:
+            return False, None
+        daily, delay = False, None
+        for detail in details:
+            for violation in detail.get("violations", []):
+                if "PerDay" in str(violation.get("quotaId", "")):
+                    daily = True
+            match = re.match(r"(\d+)s", str(detail.get("retryDelay", "")))
+            if match:
+                delay = int(match.group(1))
+        return daily, delay
+
+    def _post(self, url: str, headers: dict[str, str], body: dict[str, Any],
+              retries: int = 2) -> dict[str, Any]:
+        for attempt in range(retries + 1):
             self._throttle()
             try:
                 resp = requests.post(url, headers=headers, json=body, timeout=120)
             except requests.RequestException as exc:
-                if attempt == 3:
+                if attempt == retries:
                     raise LLMError(f"{self.name} request failed: {exc}") from exc
                 time.sleep(10 * (attempt + 1))
                 continue
             if resp.status_code == 200:
                 self.calls += 1
                 return resp.json()
-            if resp.status_code in (429, 500, 502, 503, 504) and attempt < 3:
-                retry_after = resp.headers.get("Retry-After", "")
-                delay = int(retry_after) if retry_after.isdigit() else 20 * (attempt + 1)
+            if resp.status_code == 429:
+                daily, retry_delay = self._quota_info(resp)
+                if daily:
+                    # Waiting cannot help today - the caller should switch model.
+                    raise LLMError(f"{self.name} HTTP 429 {DAILY_QUOTA}: {resp.text[:200]}")
+                if attempt < retries:
+                    delay = min(retry_delay or 20 * (attempt + 1), 60)
+                    log.warning("%s rate limited - retrying in %ss", self.name, delay)
+                    time.sleep(delay)
+                    continue
+            elif resp.status_code in (500, 502, 503, 504) and attempt < retries:
+                delay = 15 * (attempt + 1)
                 log.warning("%s HTTP %s - retrying in %ss", self.name, resp.status_code, delay)
                 time.sleep(delay)
                 continue
@@ -104,6 +139,7 @@ class GeminiLLM(BaseLLM):
     def __init__(self, api_key: str, model: str, min_interval: float) -> None:
         super().__init__(model, min_interval)
         self.api_key = api_key
+        self.exhausted: set[str] = set()  # models whose daily free quota is gone
 
     def _generate(self, model: str, system: str, prompt: str) -> dict[str, Any]:
         url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
@@ -115,18 +151,24 @@ class GeminiLLM(BaseLLM):
         return self._post(url, {"x-goog-api-key": self.api_key}, body)
 
     def complete_json(self, system: str, prompt: str) -> dict[str, Any]:
-        candidates = [self.model] + [m for m in GEMINI_FALLBACK_MODELS if m != self.model]
+        candidates = [m for m in dict.fromkeys([self.model, *GEMINI_FALLBACK_MODELS])
+                      if m not in self.exhausted]
         last_error: LLMError | None = None
         data = None
         for model in candidates:
             try:
                 data = self._generate(model, system, prompt)
             except LLMError as exc:
-                # 404 = model retired for this key, 503 = model overloaded; try the next one.
-                if "HTTP 404" not in str(exc) and "HTTP 503" not in str(exc):
+                message = str(exc)
+                # 404 = retired for this key, 503 = overloaded, 429 daily = quota gone today.
+                if DAILY_QUOTA in message:
+                    self.exhausted.add(model)
+                    log.warning("Gemini %s: free daily quota used up - switching model", model)
+                elif "HTTP 404" in message or "HTTP 503" in message:
+                    log.warning("Gemini model %s unavailable (%s) - trying next", model, message[:80])
+                else:
                     raise
                 last_error = exc
-                log.warning("Gemini model %s unavailable (%s) - trying next", model, str(exc)[:80])
                 continue
             if model != self.model:
                 log.warning("Switched Gemini model to %s", model)

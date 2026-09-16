@@ -1,7 +1,9 @@
 import pytest
 
 from scholar_radar.llm import (
+    DAILY_QUOTA,
     GEMINI_DEFAULT_MODEL,
+    GEMINI_FALLBACK_MODELS,
     GeminiLLM,
     LLMError,
     OpenAICompatibleLLM,
@@ -26,14 +28,58 @@ def test_gemini_falls_back_when_model_retired_or_overloaded(monkeypatch):
         tried.append(model)
         if model == GEMINI_DEFAULT_MODEL:
             raise LLMError("gemini HTTP 404: no longer available")
-        if model == "gemini-flash-latest":
+        if model == GEMINI_FALLBACK_MODELS[0]:
             raise LLMError("gemini HTTP 503: high demand")
         return fake_response('{"ok": true}')
 
     monkeypatch.setattr(llm, "_generate", fake_generate)
     assert llm.complete_json("s", "p") == {"ok": True}
-    assert tried == [GEMINI_DEFAULT_MODEL, "gemini-flash-latest", "gemini-3.5-flash-lite"]
-    assert llm.model == "gemini-3.5-flash-lite"  # remembered for the rest of the run
+    assert tried == [GEMINI_DEFAULT_MODEL, GEMINI_FALLBACK_MODELS[0], GEMINI_FALLBACK_MODELS[1]]
+    assert llm.model == GEMINI_FALLBACK_MODELS[1]  # remembered for the rest of the run
+
+
+def test_gemini_switches_model_when_the_daily_free_quota_is_gone(monkeypatch):
+    """Free quotas are per model per day, so waiting is useless - move to the next model."""
+    llm = gemini()
+    tried = []
+
+    def fake_generate(model, system, prompt):
+        tried.append(model)
+        if model == GEMINI_DEFAULT_MODEL:
+            raise LLMError(f"gemini HTTP 429 {DAILY_QUOTA}: quota exceeded")
+        return fake_response('{"ok": true}')
+
+    monkeypatch.setattr(llm, "_generate", fake_generate)
+    assert llm.complete_json("s", "p") == {"ok": True}
+    assert GEMINI_DEFAULT_MODEL in llm.exhausted
+    # The exhausted model is not tried again for the rest of the run
+    llm.complete_json("s", "p")
+    assert tried.count(GEMINI_DEFAULT_MODEL) == 1
+
+
+def test_daily_quota_detected_from_response_body():
+    class Resp:
+        status_code = 429
+        text = "{}"
+
+        @staticmethod
+        def json():
+            return {"error": {"details": [
+                {"@type": "type.googleapis.com/google.rpc.QuotaFailure",
+                 "violations": [{"quotaId": "GenerateRequestsPerDayPerProjectPerModel-FreeTier",
+                                 "quotaValue": "20"}]},
+                {"@type": "type.googleapis.com/google.rpc.RetryInfo", "retryDelay": "32s"}]}}
+
+    assert GeminiLLM._quota_info(Resp) == (True, 32)
+
+    class PerMinute(Resp):
+        @staticmethod
+        def json():
+            return {"error": {"details": [
+                {"violations": [{"quotaId": "GenerateRequestsPerMinutePerProjectPerModel"}]},
+                {"retryDelay": "9s"}]}}
+
+    assert GeminiLLM._quota_info(PerMinute) == (False, 9)
 
 
 def test_gemini_does_not_retry_other_errors(monkeypatch):
