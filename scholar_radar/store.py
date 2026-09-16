@@ -32,6 +32,16 @@ def content_hash(text: str) -> str:
     return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:20]
 
 
+def as_date(value: Any) -> date | None:
+    """Parse an ISO date from state/extracted data; never crash on bad values."""
+    if not isinstance(value, str):
+        return None
+    try:
+        return date.fromisoformat(value)
+    except ValueError:
+        return None
+
+
 def _empty_state() -> dict[str, Any]:
     return {
         "version": 1,
@@ -64,10 +74,10 @@ class State:
 
     # ---- seen URLs (RSS/search results) -----------------------------------------
     def is_seen(self, url: str, today: date, recheck_days: int = 120) -> bool:
-        seen = self.data["seen_urls"].get(url)
-        if not seen:
+        seen = as_date(self.data["seen_urls"].get(url))
+        if seen is None:
             return False
-        return date.fromisoformat(seen) > today - timedelta(days=recheck_days)
+        return seen > today - timedelta(days=recheck_days)
 
     def mark_seen(self, url: str, today: date) -> None:
         self.data["seen_urls"][url] = today.isoformat()
@@ -75,7 +85,13 @@ class State:
     def prune_seen(self, today: date, keep_days: int = 365) -> None:
         cutoff = today - timedelta(days=keep_days)
         self.data["seen_urls"] = {
-            u: d for u, d in self.data["seen_urls"].items() if date.fromisoformat(d) >= cutoff
+            u: d for u, d in self.data["seen_urls"].items()
+            if (as_date(d) or cutoff) >= cutoff
+        }
+        # Reminder history for opportunities we no longer track just grows forever.
+        known = set(self.data["opportunities"])
+        self.data["reminders_sent"] = {
+            k: v for k, v in self.data["reminders_sent"].items() if k in known
         }
 
     # ---- opportunities -----------------------------------------------------------
@@ -110,10 +126,16 @@ class State:
         self.data["opportunities"][opp.id] = merged
         return "updated" if changed else "unchanged"
 
-    def apply_seed_overrides(self, opp: Opportunity) -> Opportunity:
-        overrides = self.data["seed_overrides"].get(opp.seed_key or "", {})
+    def apply_seed_overrides(self, opp: Opportunity, today: date) -> Opportunity:
+        overrides = dict(self.data["seed_overrides"].get(opp.seed_key or "", {}))
         if not overrides:
             return opp
+        # A verified date from last year's page must not override this year's estimate.
+        for field in ("deadline", "opens"):
+            stored = as_date(overrides.get(field))
+            if stored is not None and stored < today:
+                overrides.pop(field, None)
+                overrides.pop("deadline_is_estimate", None)
         data = opp.to_dict()
         data.update(overrides)
         return Opportunity.from_dict(data)
@@ -130,11 +152,9 @@ class State:
             if value in (None, "", [], "unknown"):
                 continue
             if key == "deadline":
-                try:
-                    if date.fromisoformat(value) < today:
-                        continue  # the page still shows last year's deadline
-                except ValueError:
-                    continue
+                parsed = as_date(value)
+                if parsed is None or parsed < today:
+                    continue  # the page still shows last year's deadline
                 overrides["deadline_is_estimate"] = False
             overrides[key] = value
         if overrides != before:
@@ -148,33 +168,52 @@ class State:
         cutoff = today - timedelta(days=grace_days)
         keep = {}
         for opp_id, raw in self.data["opportunities"].items():
-            deadline = raw.get("deadline")
-            if raw.get("source") != "seed" and deadline:
-                try:
-                    if date.fromisoformat(deadline) < cutoff:
-                        continue
-                except ValueError:
-                    pass
+            deadline = as_date(raw.get("deadline"))
+            if raw.get("source") != "seed" and deadline is not None and deadline < cutoff:
+                continue
             keep[opp_id] = raw
         self.data["opportunities"] = keep
 
     # ---- deadline reminders ------------------------------------------------------
-    def reminder_due(self, opp_id: str, days_left: int, thresholds: list[int]) -> int | None:
+    def _sent_thresholds(self, opp_id: str, deadline: str | None) -> set[int]:
+        """Reminders already sent for THIS deadline (a new deadline starts a new cycle)."""
+        record = self.data["reminders_sent"].get(opp_id)
+        if isinstance(record, list):  # state written before deadlines were tracked
+            return set(record)
+        if isinstance(record, dict) and record.get("deadline") == deadline:
+            return set(record.get("sent", []))
+        return set()
+
+    def reminder_due(self, opp_id: str, days_left: int, thresholds: list[int],
+                     deadline: str | None = None) -> int | None:
         """Return the reminder threshold to send now (e.g. 14), or None."""
         if days_left < 0:
             return None
-        sent = set(self.data["reminders_sent"].get(opp_id, []))
+        sent = self._sent_thresholds(opp_id, deadline)
         crossed = [t for t in sorted(thresholds) if days_left <= t]
         if not crossed:
             return None
         threshold = crossed[0]
         return None if threshold in sent else threshold
 
-    def mark_reminder(self, opp_id: str, threshold: int, thresholds: list[int]) -> None:
+    def mark_reminder(self, opp_id: str, threshold: int, thresholds: list[int],
+                      deadline: str | None = None) -> None:
         # Mark this and all larger thresholds as done so we never send an older reminder later.
-        sent = set(self.data["reminders_sent"].get(opp_id, []))
+        sent = self._sent_thresholds(opp_id, deadline)
         sent.update(t for t in thresholds if t >= threshold)
-        self.data["reminders_sent"][opp_id] = sorted(sent)
+        self.data["reminders_sent"][opp_id] = {"deadline": deadline, "sent": sorted(sent)}
+
+    # ---- unsent news -------------------------------------------------------------
+    def pending_news(self) -> dict[str, str]:
+        """New/updated ids from earlier runs whose email never went out."""
+        pending = self.data.get("pending_news")
+        return dict(pending) if isinstance(pending, dict) else {}
+
+    def set_pending_news(self, statuses: dict[str, str]) -> None:
+        self.data["pending_news"] = dict(statuses)
+
+    def clear_pending_news(self) -> None:
+        self.data["pending_news"] = {}
 
     # ---- runs & persistence ------------------------------------------------------
     def record_run(self, stats: dict[str, Any]) -> None:
