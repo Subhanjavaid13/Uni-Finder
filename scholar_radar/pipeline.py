@@ -215,6 +215,13 @@ def run(settings: Settings, options: RunOptions, today: date | None = None,
     report_path = settings.output_dir / "latest_report.html"
     report_path.write_text(html_body, encoding="utf-8")
     (settings.output_dir / "latest_report.txt").write_text(text_body, encoding="utf-8")
+    try:
+        from .dashboard import build_dashboard
+
+        build_dashboard(settings, settings.output_dir / "dashboard.html", today)
+    except Exception as exc:  # the dashboard is a convenience; never fail the run for it
+        log.warning("Could not build the dashboard: %s", exc)
+        errors.append(f"dashboard: {exc}")
 
     # 6. Save the research BEFORE emailing, so a mail failure never wastes the AI quota.
     #    Unsent news is remembered in `pending_news` and repeated in the next email.

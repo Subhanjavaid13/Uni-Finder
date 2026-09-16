@@ -117,6 +117,23 @@ def cmd_queries(_: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_dashboard(args: argparse.Namespace) -> int:
+    import webbrowser
+    from pathlib import Path
+
+    from .dashboard import build_dashboard
+
+    settings = load_settings()
+    out = Path(args.output) if args.output else settings.output_dir / "dashboard.html"
+    stats = build_dashboard(settings, out)
+    print(f"Dashboard: {out}")
+    for key, value in stats.items():
+        print(f"  {key}: {value}")
+    if args.open:
+        webbrowser.open(out.resolve().as_uri())
+    return 0
+
+
 def cmd_visa(args: argparse.Namespace) -> int:
     from .visa import load_visa_money, lookup
 
@@ -196,6 +213,11 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("test-email", help="send a test email").set_defaults(func=cmd_test_email)
     sub.add_parser("checklist", help="print the documents you need").set_defaults(func=cmd_checklist)
     sub.add_parser("queries", help="show this week's search queries").set_defaults(func=cmd_queries)
+
+    p_dash = sub.add_parser("dashboard", help="build the HTML dashboard to browse everything")
+    p_dash.add_argument("--open", action="store_true", help="open it in your browser")
+    p_dash.add_argument("--output", help="output .html path")
+    p_dash.set_defaults(func=cmd_dashboard)
 
     p_visa = sub.add_parser("visa", help="bank statement / proof of funds rules per country")
     p_visa.add_argument("country", nargs="?", help="e.g. Italy, Germany, UK")

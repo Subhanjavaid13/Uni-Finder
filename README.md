@@ -26,6 +26,23 @@ Everything runs on **free tiers**: Gemini API, DuckDuckGo/Bing metasearch, GitHu
 | Documents you need | Checklist (why, how, when, cost) + how many of your matches need each document |
 | For later | Great scholarships you can't apply for *yet* (e.g. need 2 years of work experience) |
 
+## Browse everything yourself: the dashboard
+
+```powershell
+python -m scholar_radar dashboard --open
+```
+
+One self-contained file (`output/dashboard.html`) you can open offline, with four tabs:
+
+| Tab | What you can do |
+|---|---|
+| **Universities** | Search 326 researched programmes by university, city or name; filter by country, field, funding, English rule (MOI / no IELTS / IELTS) and free-to-apply; sort by fit, country, city or deadline |
+| **Weekly finds** | The scholarships the agent tracks for you, with match score, deadline countdown and why it fits |
+| **Visa & money** | Per country: money to show, bank statement needed?, is a scholarship letter accepted, visa fee |
+| **Documents** | Your checklist with why / how / when / cost |
+
+It is rebuilt automatically at the end of every weekly run.
+
 ## How it works
 
 ```
@@ -130,6 +147,7 @@ After that it runs every **Monday at 9:00 AM Pakistan time**. The job commits it
 | `python -m scholar_radar list --all` | Also show excluded scholarships and why |
 | `python -m scholar_radar checklist` | Print the documents checklist |
 | `python -m scholar_radar visa Italy` | Bank statement / proof-of-funds rules for a country (no argument = all) |
+| `python -m scholar_radar dashboard --open` | Build and open the browsable HTML dashboard |
 | `python -m scholar_radar check-sources` | Test every official page and RSS feed |
 | `python -m scholar_radar queries` | Show this week's search queries |
 | `python -m pytest` | Run the tests |
