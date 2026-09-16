@@ -1,10 +1,11 @@
 from datetime import date
 
 from scholar_radar.checklist import document_demand
-from scholar_radar.config import Profile
+from scholar_radar.config import Profile, load_settings
 from scholar_radar.matcher import match
 from scholar_radar.models import Opportunity
 from scholar_radar.report import Reminder, ReportData, build_report
+from scholar_radar.visa import load_visa_money
 
 TODAY = date(2026, 9, 15)
 PROFILE = Profile({
@@ -31,8 +32,13 @@ def test_report_renders_sections_and_escapes_html():
         today=TODAY, new_results=active, statuses={no_ielts.opportunity.id: "new"},
         reminders=[Reminder(no_ielts, 10, 14)], opening_soon=[], active=active, later=[],
         demand=demand, other_docs=other, stats={"pages_analysed": 3}, errors=["x failed"],
+        visa_money=load_visa_money(load_settings().visa_path),
     )
     subject, html, text = build_report(data)
+
+    assert "Money for your visa" in html and "Bank statement?" in html
+    assert "Hungary" in html
+    assert "MONEY FOR YOUR VISA" in text
 
     assert "2 new/updated matches" in subject and "1 deadline alert" in subject
     assert "<script>alert(1)</script>" not in html

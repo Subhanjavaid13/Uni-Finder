@@ -22,6 +22,7 @@ Everything runs on **free tiers**: Gemini API, DuckDuckGo/Bing metasearch, GitHu
 | New & updated: English not stated | Matches where you must check the English rule |
 | Opening soon | Recurring scholarships expected to open in the next 45 days |
 | All your current matches | One table with deadline, English track and match score |
+| Money for your visa | Per country: how much money you must show, whether you need a bank statement, and whether a scholarship letter replaces it |
 | Documents you need | Checklist (why, how, when, cost) + how many of your matches need each document |
 | For later | Great scholarships you can't apply for *yet* (e.g. need 2 years of work experience) |
 
@@ -128,6 +129,7 @@ After that it runs every **Monday at 9:00 AM Pakistan time**. The job commits it
 | `python -m scholar_radar list` | Show your current matches in the terminal |
 | `python -m scholar_radar list --all` | Also show excluded scholarships and why |
 | `python -m scholar_radar checklist` | Print the documents checklist |
+| `python -m scholar_radar visa Italy` | Bank statement / proof-of-funds rules for a country (no argument = all) |
 | `python -m scholar_radar check-sources` | Test every official page and RSS feed |
 | `python -m scholar_radar queries` | Show this week's search queries |
 | `python -m pytest` | Run the tests |
@@ -138,6 +140,8 @@ After that it runs every **Monday at 9:00 AM Pakistan time**. The job commits it
   Set `work_experience_years: 2` later and Chevening / DAAD EPOS will move out of "For later".
 - **`config/sources.yaml`**: add official pages, RSS feeds, search queries or countries.
 - **`config/scholarships_seed.yaml`**: add scholarships you already know about.
+- **`config/visa_money.yaml`**: proof-of-funds and bank-statement rules for 43 countries.
+  Update an amount whenever you confirm it on an embassy page.
 
 ## Honest limitations
 

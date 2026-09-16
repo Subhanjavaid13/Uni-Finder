@@ -76,6 +76,11 @@ class Opportunity:
     pakistan_eligible: bool | None = None
     eligibility_notes: str | None = None
 
+    # Money proof for the visa, when the page itself says something about it
+    bank_statement_required: bool | None = None
+    proof_of_funds_amount: str | None = None
+    scholarship_covers_proof: bool | None = None
+
     required_documents: list[str] = field(default_factory=list)
     summary: str = ""
     evidence: str | None = None  # short quote from the page backing deadline/fee claims

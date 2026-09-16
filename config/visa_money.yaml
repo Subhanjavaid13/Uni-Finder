@@ -1,0 +1,506 @@
+# ------------------------------------------------------------------
+# MONEY PROOF FOR STUDENT VISAS (per country)
+#
+# Answers: do I need a bank statement, how much money must I show, and does a
+# scholarship award letter replace it?
+#
+# Collected from embassy/immigration pages by the research agents on 2026-09-15.
+# Rules and amounts change every year - ALWAYS confirm on the embassy checklist.
+# scholarship_letter_accepted: yes | maybe | unknown
+# ------------------------------------------------------------------
+
+checked_on: '2026-09-15'
+countries:
+- country: Albania
+  visa_type: null
+  proof_of_funds: Not confirmed - check the embassy checklist.
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: null
+  source: https://epoka.edu.al/study-programs/en/MSc-CEN/NDQz/Admission
+- country: Austria
+  visa_type: Residence permit 'Student' (Aufenthaltsbewilligung Student) for third-country degree students
+  proof_of_funds: Not confirmed - check the embassy checklist.
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: Get the admission letter first, then apply for the residence permit through the Austrian representation
+    responsible for Pakistan. Study in Austria advises starting about 3 months before entry; full requirements
+    are on oead.at/entry (that page and migration.gv.at were not reachable during research).
+  source: https://studyinaustria.at/en/tuition
+- country: Belgium
+  visa_type: Type D long-stay student visa (Art. 58, public institutions)
+  proof_of_funds: EUR 1,062/month for 2026-27 (EUR 12,744/year) via blocked account, Annex 32 sponsor,
+    or scholarship certificate; own bank statements not accepted (amount from ULiege page search snippet)
+  bank_statement: Your own bank statements are NOT accepted. Use a blocked account, an Annex 32 sponsor,
+    or a scholarship certificate.
+  scholarship_letter_accepted: 'yes'
+  visa_fee: null
+  notes: Admission letter -> VisaOnWeb form -> submit at VFS Global / Gerry's visa centre; Belgian Embassy
+    Islamabad decides (1-3 weeks, 4-6 if sent to Brussels)
+  source: https://www.vfsglobal.com/one-pager/belgium/pakistan/english/pdf/student-visa-checklist.pdf
+- country: Bosnia and Herzegovina
+  visa_type: null
+  proof_of_funds: Not confirmed - check the embassy checklist.
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: null
+  source: https://www.ius.edu.ba/en/tuition-fees-scholarships
+- country: Bulgaria
+  visa_type: Long-term visa type D, then Bulgarian ID card for long-term residence (Migration office,
+    Ministry of Interior)
+  proof_of_funds: Not confirmed - check the embassy checklist.
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: Apply to university (Sofia University recommends by 15 September) -> university sends complete
+    file to Ministry of Education and Science, which issues the 'Udostoverenie' -> apply for D visa at
+    Bulgarian consulate -> after faculty registration apply for long-term residence ID card
+  source: https://www.uni-sofia.bg/index.php/eng/admission/international_students/how_to_apply_for_a_student_visa_and_a_bulgarian_id_card_for_a_long_term_residence
+- country: China
+  visa_type: null
+  proof_of_funds: Not researched yet - check the embassy website.
+  bank_statement: Fully funded government scholarships (GKS, MEXT, CSC) normally accept the award letter;
+    verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: null
+  source: null
+- country: Croatia
+  visa_type: Entry visa (if required) + temporary residence permit for study
+  proof_of_funds: Proof of means of support required; amount not stated on Study in Croatia visa page
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: Temporary stay approval EUR 46.45; biometric residence card EUR 31.85 (EUR 59.73 expedited);
+    admin fee EUR 9.29
+  notes: 'After admission, apply for temporary stay for study at a Croatian diplomatic mission/consulate
+    (or at police after arrival): Form 1a, passport, proof of means of support, photo, health insurance,
+    criminal record (<6 months), health/vaccination certificate (<90 days)'
+  source: https://www.studyincroatia.hr/live-and-work-in-croatia/visa-and-residence-permit/
+- country: Cyprus
+  visa_type: Student entry/residence permit for third-country nationals (Civil Registry and Migration
+    Department)
+  proof_of_funds: Not verified
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: 'Not verified: the Civil Registry and Migration Department website could not be reached. Get
+    admission from UCY or CUT first; the university''s international office normally guides the entry-permit
+    process. Confirm the procedure with the university and the High Commission of Cyprus.'
+  source: https://cs.ucy.ac.cy/index.php?catid=19&id=658%3Aunifees&view=article
+- country: Czech Republic
+  visa_type: Long-term visa for study (or long-term residence permit for study)
+  proof_of_funds: Bank statement for the last 6 months plus an international debit card (the embassy page
+    gives no minimum amount)
+  bank_statement: Yes - bank statement for the last 6 months plus an international debit card.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: Book an appointment with the Embassy of the Czech Republic in Islamabad (it handles Pakistani
+    and Afghan nationals; dedicated study-visa slots on Tue/Wed/Thu). The Ministry of Interior decides;
+    status can be tracked at ipc.gov.cz.
+  source: https://mzv.gov.cz/islamabad/en/visa_1/index.html
+- country: Denmark
+  visa_type: Residence permit for higher educational programmes (SIRI, form ST1)
+  proof_of_funds: DKK 7,426 per month (2026 level), capped at DKK 89,112 for studies over one year. Bank
+    statement in own name dated within 30 days; funds in parents' names or stocks/bonds not accepted.
+    Not required if paid tuition covers room and board.
+  bank_statement: Yes - statement in your own name dated within the last 30 days (a parent's account is
+    not accepted), unless a scholarship covers the monthly amount.
+  scholarship_letter_accepted: 'yes'
+  visa_fee: DKK 3,060
+  notes: After admission, pay fee and submit ST1 online, then give biometrics (photo + fingerprints) within
+    14 days at the Danish Embassy in Islamabad or VFS centre. Processing ~2 months (3 if more info needed).
+  source: https://www.nyidanmark.dk/en-GB/You-want-to-apply/Study/Higher-Education
+- country: Estonia
+  visa_type: Long-term D visa, then temporary residence permit (TRP) for study from Police and Border
+    Guard Board (PPA)
+  proof_of_funds: Legal income of four times the subsistence level; University of Tartu quotes approx.
+    EUR 880 per month, shown via 3 months of bank statements, parental income statements or scholarship
+    documents.
+  bank_statement: Yes - about 3 months of bank statements, or parental/scholarship documentation.
+  scholarship_letter_accepted: 'yes'
+  visa_fee: D visa EUR 120; TRP EUR 225
+  notes: 'No Estonian embassy in Pakistan: apply for the D visa via VFS Global (where available) or travel
+    to the nearest Estonian embassy (own responsibility). After arrival book a PPA service office appointment
+    for the TRP (decision within 2 months).'
+  source: https://ut.ee/en/visainfo
+- country: European Union
+  visa_type: National (D) study visa of the country you start in, then a residence permit
+  proof_of_funds: Set by the first host country (e.g. Italy EUR 10,179.85/year, Germany blocked account).
+    An Erasmus Mundus award letter (about EUR 1,400/month) normally covers it.
+  bank_statement: Usually replaced by the Erasmus Mundus award letter - confirm on the first host country's
+    embassy checklist, because each consulate decides.
+  scholarship_letter_accepted: maybe
+  visa_fee: null
+  notes: Erasmus Mundus students move between 2-3 countries; apply for the visa of the first one.
+  source: null
+- country: Finland
+  visa_type: First residence permit for studies (Migri)
+  proof_of_funds: EUR 800 per month; for studies of one year or longer EUR 9,600 in own bank account (sole
+    owner) at time of application. EUR 270/month if institution provides free accommodation and meals.
+    Plus private health insurance.
+  bank_statement: Yes - EUR 9,600 in an account you solely own; not needed if your scholarship fully covers
+    living costs.
+  scholarship_letter_accepted: 'yes'
+  visa_fee: null
+  notes: Apply via Studyinfo.fi joint application (most universities 7-21 Jan 2027; Helsinki 5-19 Jan
+    2027; LUT rolling 1 Oct 2026 - 31 Mar 2027). After admission apply for residence permit online (Enter
+    Finland) and visit a Finnish embassy/consulate (Islamabad) or authorised service point in person to
+    prove identity with original documents.
+  source: https://studies.helsinki.fi/instructions/article/residence-permit-degree-students
+- country: France
+  visa_type: Long-stay student visa equivalent to residence permit (VLS-TS)
+  proof_of_funds: Min EUR 877.5/month per Campus France Pakistan page (bank statements, sponsor or scholarship)
+  bank_statement: Yes - bank statements, a sponsor, or a scholarship award letter showing at least EUR
+    877.50/month.
+  scholarship_letter_accepted: 'yes'
+  visa_fee: 'Not verified on official page (third-party: EUR 90 long-stay; Campus France Pakistan fee
+    ~PKR 30,000)'
+  notes: Etudes en France application via Campus France Pakistan (interview), then France-Visas online
+    form, appointment at French Consulate Islamabad booked via AEG (frenchvisa.aeg.com.pk)
+  source: https://www.pakistan.campusfrance.org/
+- country: Germany
+  visa_type: National (D) visa for study, Section 16b Residence Act
+  proof_of_funds: 'Blocked account (Sperrkonto) for one year. Embassy Islamabad checklist (Stand 10/2023)
+    lists EUR 11,208/year; the 2026 figure widely reported is EUR 992/month = EUR 11,904/year (TU Darmstadt
+    also cites ~EUR 992/month living costs). Alternatives accepted: formal obligation letter (Verpflichtungserklaerung)
+    from a German Aliens'' Authority, or scholarship award.'
+  bank_statement: 'No ordinary bank statement: you need a BLOCKED ACCOUNT (Sperrkonto) - unless your scholarship
+    award letter covers the yearly amount.'
+  scholarship_letter_accepted: 'yes'
+  visa_fee: EUR 75, paid in PKR
+  notes: Get admission (direct or via uni-assist; Pakistani degrees usually need HEC-attested documents,
+    no APS). Book appointment and submit via the Federal Foreign Office Consular Services Portal (digital.diplo.de).
+    Embassy Islamabad covers ICT, Punjab, KP, GB, AJK; Consulate General Karachi covers Sindh and Balochistan.
+    Missions report high volume of student applications and process in order received.
+  source: https://pakistan.diplo.de/pk-en/service/2-study-visa-seite-1676104
+- country: Greece
+  visa_type: National (Type D) visa for studies, then a residence permit for studies from the Decentralised
+    Administration / Aliens office after arrival
+  proof_of_funds: Official amount not verified (MFA page blocked). Secondary sources say about EUR 7,000-10,000
+    for one academic year, with bank statements and tax documents.
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: Not verified officially; secondary source says EUR 175 for a long-stay national visa (low
+    confidence)
+  notes: Get a Letter of Acceptance (sent by e-mail and post, per the TU Crete MLDS page). Then apply
+    in person at the Embassy of Greece in Islamabad with the required documents, and start early. Study
+    in Greece works with a 'Global Visa' support centre.
+  source: https://www.mlds.tuc.gr/en/for-students/international-students
+- country: Hungary
+  visa_type: Residence permit for the purpose of studies (applied for at a Hungarian consulate abroad)
+  proof_of_funds: Bank statements, sponsor declaration with supporting documents, employment letter, or
+    other credible proof; no fixed amount is given on the OIF page
+  bank_statement: Yes, OR a sponsor declaration, OR a scholarship certificate - the Stipendium Hungaricum
+    certificate is accepted.
+  scholarship_letter_accepted: 'yes'
+  visa_fee: null
+  notes: Apply at the Hungarian consulate covering your country of citizenship or residence (OIF rules).
+    Stipendium Hungaricum winners start the visa process in July-August after results.
+  source: https://stipendiumhungaricum.hu/apply/
+- country: Iceland
+  visa_type: Residence permit for students (Directorate of Immigration)
+  proof_of_funds: Secure means of support required; exact monthly ISK amount not confirmed on official
+    page (secondary sources quote ISK ~180,000-247,000/month).
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: ISK 70,000 processing fee
+  notes: After admission apply to the Directorate of Immigration (island.is/en/residence-permit-students)
+    by 1 May for autumn semester; documents include passport copy, health insurance, housing certificate,
+    criminal record, proof of funds; non-English/Nordic documents need certified translation.
+  source: https://island.is/en/residence-permit-students
+- country: Ireland
+  visa_type: Long-stay 'D' study visa; register for Stamp 2 student permission after arrival
+  proof_of_funds: Secondary sources report about EUR 10,000 available for first-year living costs plus
+    tuition paid/committed, with steady bank balances (not a last-minute deposit). The official 'Finances'
+    section could not be read.
+  bank_statement: Yes - a steady balance (about EUR 10,000), not money deposited at the last minute. A
+    scholarship/fee-waiver letter helps but was not officially confirmed.
+  scholarship_letter_accepted: unknown
+  visa_fee: EUR 60 single entry / EUR 100 multiple entry (secondary source, 2026) + VFS service charge
+  notes: 'Get a Letter of Acceptance from the college. Pay tuition first: the full fee if it is under
+    EUR 6,000, otherwise at least EUR 6,000 before applying. Get private medical insurance. Apply online,
+    complete the ''Summary of Finances'' form and submit documents/biometrics at the visa application
+    centre in Pakistan (VFS Global per secondary sources). Processing reported as 4-8 weeks.'
+  source: https://www.irishimmigration.ie/coming-to-study-in-ireland/what-are-my-study-visa-options/how-to-apply-for-long-term-study-visa/
+- country: Italy
+  visa_type: Type D national visa for study (university enrolment), followed by a permesso di soggiorno
+    per studio (residence permit for study), requested at the Questura after arrival
+  proof_of_funds: 'At least EUR 10,179.85 per year (MUR figure for 2026/27 and 2027/28, up from EUR 6,947.33)
+    held in a bank account in the student''s name. Embassy Islamabad also accepts proof of the applicant''s
+    and parents'' (or relatives up to 4th degree) means; sponsor must give an apostilled, Italian-translated
+    affidavit stating amount, origin and duration of support. Cash, guarantees from persons outside the
+    family, bank guarantees or surety bonds are NOT accepted. Assessment is not based on a one-off balance:
+    6 months of signed/stamped bank statements, income tax returns (3 years), payslips (6 months), employment
+    contract/employer letter or company ...'
+  bank_statement: Yes - funds must sit in a bank account in YOUR name, unless an Italian university/regional
+    scholarship award letter covers it.
+  scholarship_letter_accepted: 'yes'
+  visa_fee: EUR 50 (PKR 15,850) for National/Study visa Type D, plus BLS-Intiana service fee PKR 11,050
+    (Intiana Islamabad study page shows long-stay study visa fee PKR 16,250)
+  notes: 1) Apply to the university (own portal / DreamApply / UniGeApply etc.) and get admitted. 2) Submit
+    pre-enrolment on Universitaly (universitaly.it/studenti-stranieri); the university must validate it
+    'without reservation' before a visa application is admissible. 3) Book and lodge the visa at the Embassy
+    of Italy Islamabad jurisdiction through the outsourcing company BLS-Intiana ...
+  source: https://ambislamabad.esteri.it/wp-content/uploads/2026/06/ME10_Study-visa-D.pdf
+- country: Japan
+  visa_type: null
+  proof_of_funds: Not researched yet - check the embassy website.
+  bank_statement: Fully funded government scholarships (GKS, MEXT, CSC) normally accept the award letter;
+    verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: null
+  source: null
+- country: Latvia
+  visa_type: Residence permit for studies (Office of Citizenship and Migration Affairs, PMLP/OCMA)
+  proof_of_funds: EUR 500 per month for students at accredited higher education institutions (PMLP)
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: University invitation must first be approved by PMLP; then submit residence permit application
+    with passport copy, form, photo, proof of subsistence, state duty receipt and study agreement. Latvia
+    has no resident embassy in Pakistan (honorary consulate only) - submission location abroad not verified.
+  source: https://www.pmlp.gov.lv/en/studies
+- country: Lithuania
+  visa_type: Temporary residence permit (TRP) for studies via MIGRIS (national D visa for short programmes)
+  proof_of_funds: At least EUR 577 x 12 months + EUR 1,153 for return travel (~EUR 8,077) per Vilnius
+    University guide; bank statement, work contract or other proof. Health insurance min. EUR 10,000 cover.
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: State fee EUR 80 (EUR 320 urgent) + VFS service fee EUR 40-160
+  notes: After admission the university issues a mediation letter; file TRP application in MIGRIS and
+    submit documents through the external service provider VFS Global (no Lithuanian embassy in Pakistan).
+  source: https://www.vu.lt/en/admissions/visa-and-residence-permit
+- country: Luxembourg
+  visa_type: Temporary authorisation to stay (applied from abroad) + Type D visa, then residence permit
+    within 3 months of arrival
+  proof_of_funds: Monthly resources >= 80% of the social inclusion income (REVIS); bank statements (6
+    months), scholarship certificates or sponsor declaration; free accommodation counts
+  bank_statement: Usually not needed if your scholarship letter shows the full amount; otherwise yes.
+  scholarship_letter_accepted: 'yes'
+  visa_fee: null
+  notes: Apply to Luxembourg Immigration Directorate for temporary authorisation to stay; visa D via Belgian
+    Embassy Islamabad (represents Luxembourg)
+  source: https://guichet.public.lu/en/citoyens/immigration/plus-3-mois/ressortissant-tiers/etudiant/etudiant-pays-tiers.html
+- country: Malta
+  visa_type: National (Type D) student visa for courses over 90 days, followed by a single residence permit
+    from Identità (Expatriates Unit) after arrival
+  proof_of_funds: Official amount not verified. Secondary sources give about EUR 9,000-10,000 per year
+    for living costs, excluding tuition, shown by 3-6 months of bank statements in the applicant's or
+    a parent's name.
+  bank_statement: Yes - about 3-6 months of bank statements (amount not officially verified).
+  scholarship_letter_accepted: unknown
+  visa_fee: 'Secondary source: EUR 180 visa fee + about EUR 100 VFS service charge (low confidence)'
+  notes: Get a UM offer; UM's International Office assists with visas. Apply for the Type D visa through
+    the Identità Central Visa Unit via the visa application centre in Pakistan (secondary sources say
+    VFS in Islamabad, Lahore and Karachi). Processing takes 4-8 weeks, then 5-6 weeks for the residence
+    permit after arrival.
+  source: https://identita.gov.mt/central-visa-unit-sec-page-student-visa/
+- country: Netherlands
+  visa_type: MVV (provisional residence permit) + residence permit for study (TEV procedure)
+  proof_of_funds: EUR 1,130.77/month for university (WO) students in 2026, usually deposited with the
+    university or shown via scholarship
+  bank_statement: Usually paid as a deposit to the university, or covered by a scholarship letter, instead
+    of a personal bank statement.
+  scholarship_letter_accepted: 'yes'
+  visa_fee: EUR 254 (residence permit for study, 2026)
+  notes: University, as IND recognised sponsor, files the MVV/residence application after admission and
+    fee/funds deposit; student collects MVV sticker at Dutch embassy
+  source: https://ind.nl/en/required-amounts-income-requirements
+- country: North Macedonia
+  visa_type: null
+  proof_of_funds: Not confirmed - check the embassy checklist.
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: null
+  source: https://finki.ukim.mk/en/internacionalni-studenti/admissions/masters-studies-for-international-students/
+- country: Norway
+  visa_type: Study permit (studietillatelse) from UDI
+  proof_of_funds: Must document living costs for the academic year PLUS any tuition fee, in a Norwegian
+    bank account or the institution's deposit account (loans/grants also accepted). Official 2026/27 amount
+    could not be verified (UDI blocks automated access; secondary sources quote around NOK 151,690-170,368/year).
+  bank_statement: Usually not needed if your scholarship letter shows the full amount; otherwise yes.
+  scholarship_letter_accepted: 'yes'
+  visa_fee: NOK 6,300 (per secondary source, not verified on udi.no)
+  notes: Apply to university (non-EU deadlines usually ~1 December the year before, e.g. NTNU 1 Dec 2025
+    for 2026), then UDI application portal online and hand in documents/biometrics at the visa application
+    centre/embassy for Pakistan.
+  source: https://www.uio.no/english/studies/admission/tuition/
+- country: Poland
+  visa_type: National (D) visa for study, followed by a temporary residence permit from the Voivodeship
+    Office
+  proof_of_funds: '''Sufficient means to support yourself'' - study.gov.pl gives no amount; confirm with
+    the consulate'
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: Apply at the Polish consulate responsible for Pakistan; book appointments via e-Konsulat (secure.e-konsulat.gov.pl).
+    Before the visa expires, apply for a temporary residence permit at the local Voivodeship Office (first
+    permit covers 15 months, renewable).
+  source: https://study.gov.pl/visa-application
+- country: Portugal
+  visa_type: 'National visa: residence visa for higher-education study (or temporary stay visa for courses
+    up to 1 year)'
+  proof_of_funds: Sufficient means of subsistence are required (Embassy page); the official amount was
+    not verified. Secondary sources suggest EUR 6,000-8,000/year plus proof of tuition, with bank statements
+    covering 3-6 months. Secondary sources also say the requirement can be waived if accommodation and
+    food are shown to be covered.
+  bank_statement: Maybe - a scholarship letter may replace or reduce it. Verify with the embassy.
+  scholarship_letter_accepted: maybe
+  visa_fee: EUR 110 for national visas (Embassy of Portugal, Islamabad); secondary sources add a residence-permit
+    fee after arrival
+  notes: Get admission, then apply through the Embassy of Portugal in Islamabad's external service provider.
+    The Embassy page names 'Gerry's'; older VFS Global Pakistan checklists also exist, so check the current
+    provider. Documents must be apostilled (birth certificate, police character certificate issued within
+    90 days, enrolment proof). Decision usually within 15 working days, up to 45 days for complex ...
+  source: https://islamabad.embaixadaportugal.mne.gov.pt/en/consular-section/visas
+- country: Romania
+  visa_type: Long-stay (D) visa for studies, granted for 90 days, then residence permit from the General
+    Inspectorate for Immigration
+  proof_of_funds: At least the Romanian minimum net monthly wage for the whole visa period (UPB visa page);
+    Study in Romania procedures page cites minimum EUR 2,000. Plus proof of 1-year tuition payment, medical
+    insurance, criminal record.
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: 'Apply to university (e.g. apply.upb.ro, admission.cci.ubbcluj.ro) -> university sends file to
+    Ministry of Education, which issues a Letter of Acceptance (30 working days per Study in Romania;
+    UPB says min 60 days) -> pay tuition for 1 year (UPB: within 20 days) -> apply for long-stay study
+    visa at Romanian mission (evisa.mae.ro); visa approved after favourable opinion of Immigration (within
+    30 ...'
+  source: https://studyinromania.gov.ro/procedures
+- country: Saudi Arabia
+  visa_type: null
+  proof_of_funds: Not researched yet - check the embassy website.
+  bank_statement: Fully funded government scholarships (GKS, MEXT, CSC) normally accept the award letter;
+    verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: null
+  source: null
+- country: Serbia
+  visa_type: Long-term visa D (education) as basis to apply for temporary residence
+  proof_of_funds: Not confirmed - check the embassy checklist.
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: Admission/enrolment -> apply for Visa D at Serbian embassy with application form, visa fee and
+    documents required for temporary residence under the Law on Foreigners -> temporary residence permit
+    in Serbia
+  source: https://www.mfa.gov.rs/en/citizens/travel-serbia/visa-requirements
+- country: Slovakia
+  visa_type: Temporary residence for the purpose of study
+  proof_of_funds: Not confirmed - check the embassy checklist.
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: null
+  source: https://www.stuba.sk/english/applicants-1/how-to-start-to-study/tuition-and-fees.html?page_id=16567
+- country: Slovenia
+  visa_type: Temporary residence permit for study
+  proof_of_funds: Sufficient means of subsistence required; amount not given on infotujci.si
+  bank_statement: Probably yes - not confirmed on an official page. Verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: 'First-time applicants apply at a Slovenian diplomatic mission/consulate in their home country
+    or country of residence. Documents: application form, valid passport, photo, proof of enrolment, health
+    insurance, proof of sufficient means of subsistence, security clearance, certified translations; fingerprints
+    are taken.'
+  source: https://infotujci.si/pogoji/drzavljani-izven-eu/dovoljenje-za-prebivanje/
+- country: South Korea
+  visa_type: null
+  proof_of_funds: Not researched yet - check the embassy website.
+  bank_statement: Fully funded government scholarships (GKS, MEXT, CSC) normally accept the award letter;
+    verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: null
+  source: null
+- country: Spain
+  visa_type: National (Type D) study visa / stay authorisation for studies (autorización de estancia por
+    estudios)
+  proof_of_funds: 'At least 100% of IPREM per month of stay (Embassy page). IPREM 2026 is about EUR 600/month
+    according to secondary sources, so a 9-month course needs about EUR 5,400. Accepted evidence: bank
+    statements (3-6 months), or a notarised parental sponsor letter plus the sponsor''s statements. Tuition
+    must also be covered.'
+  bank_statement: Maybe - a scholarship letter may replace or reduce it. Verify with the embassy.
+  scholarship_letter_accepted: maybe
+  visa_fee: EUR 80 (Embassy page; amounts may differ by nationality under reciprocity)
+  notes: Get admission from the Spanish university, then apply in person with appointment. The Embassy
+    of Spain in Islamabad's page says to apply 'at the Consular Office'. Secondary sources say applications
+    are taken at BLS International centres in Islamabad, Karachi and Lahore (15-30 working days). Decision
+    deadline is 1 month. After arrival, apply for the TIE foreigner card within the first month.
+  source: https://www.exteriores.gob.es/Embajadas/islamabad/en/ServiciosConsulares/Paginas/Consular/Visado-de-estudios.aspx
+- country: Sweden
+  visa_type: Residence permit for higher education studies (Migrationsverket)
+  proof_of_funds: At least SEK 10,656 per month (applications in 2026); reduced by SEK 2,960/month if
+    free food and SEK 4,736/month if free housing. Bank assets, scholarships, loans, sponsor or employment
+    income may be combined. Statements not older than 4 months before permit start.
+  bank_statement: Yes - bank assets in your own name, or a scholarship letter showing the amount and payment
+    schedule.
+  scholarship_letter_accepted: 'yes'
+  visa_fee: SEK 1,500 (adults)
+  notes: Apply via universityadmissions.se (national round 16 Oct 2026 - 15 Jan 2027, SEK 900 fee). After
+    admission pay the first tuition instalment (you are only 'finally admitted' once payment is confirmed),
+    then apply online via Migrationsverket e-service (18+, email, Visa/Mastercard); otherwise paper application
+    at the Swedish Embassy in Islamabad.
+  source: https://www.migrationsverket.se/en/you-want-to-apply/study/higher-education.html
+- country: Switzerland
+  visa_type: National D visa for studies (cantonal residence permit B after arrival)
+  proof_of_funds: Not stated on embassy pages opened; third-party guides cite ~CHF 21,000/year (some cantons
+    CHF 24,000)
+  bank_statement: Maybe - a scholarship letter may replace or reduce it. Verify with the embassy.
+  scholarship_letter_accepted: maybe
+  visa_fee: null
+  notes: In person at Embassy of Switzerland Islamabad by appointment (email islamabad.visa@eda.admin.ch);
+    file sent to cantonal migration office, ~8-12 weeks
+  source: https://www.schweiz-pakistan.eda.admin.ch/en/where-to-apply-for-a-national-visa
+- country: Turkey
+  visa_type: Student visa issued by a Turkish embassy/consulate (e-Visa is NOT valid for study), followed
+    by a Student Residence Permit (ikamet) inside Turkiye
+  proof_of_funds: Not confirmed - check the embassy checklist.
+  bank_statement: Not confirmed on official pages - check the Turkish consulate checklist. Turkiye Burslari
+    students normally show the award letter.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: Get admission letter from the Turkish university (or Turkiye Burslari placement) -> apply for
+    study visa at the Turkish diplomatic mission in Pakistan (ordinary passport holders need a visa) ->
+    after arrival register/apply for student residence permit via e-ikamet (Presidency of Migration Management)
+  source: https://www.mfa.gov.tr/visa-information-for-foreigners.en.mfa
+- country: United Arab Emirates
+  visa_type: null
+  proof_of_funds: Not researched yet - check the embassy website.
+  bank_statement: Fully funded government scholarships (GKS, MEXT, CSC) normally accept the award letter;
+    verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: null
+  source: null
+- country: United Kingdom
+  visa_type: Student visa (Student route)
+  proof_of_funds: 'Living costs: GBP 1,529/month in London or GBP 1,171/month outside London, for up to
+    9 months (GBP 13,761 London / GBP 10,539 outside London) plus any unpaid first-year tuition. Funds
+    must be held for 28 consecutive days, ending within 31 days of the visa application.'
+  bank_statement: Not needed if you have an official financial sponsor letter (HEC, Commonwealth, British
+    Council, your university). Otherwise 28 days of bank statements.
+  scholarship_letter_accepted: 'yes'
+  visa_fee: GBP 558 (from outside UK) + Immigration Health Surcharge GBP 776 per year (student rate)
+  notes: Get an offer, pay any tuition deposit the university requires, receive a CAS (Confirmation of
+    Acceptance for Studies). Take a TB test at a UK Home Office-approved clinic in Pakistan (approved
+    clinics listed on GOV.UK incl. Islamabad, Lahore, Karachi, Mirpur). Apply online on GOV.UK (earliest
+    6 months before course start), pay visa fee + Immigration Health Surcharge, then give biometrics/documents
+    ...
+  source: https://www.gov.uk/student-visa/money
+- country: United States
+  visa_type: null
+  proof_of_funds: Not researched yet - check the embassy website.
+  bank_statement: Fully funded government scholarships (GKS, MEXT, CSC) normally accept the award letter;
+    verify with the embassy.
+  scholarship_letter_accepted: unknown
+  visa_fee: null
+  notes: null
+  source: null

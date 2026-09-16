@@ -117,6 +117,39 @@ def cmd_queries(_: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_visa(args: argparse.Namespace) -> int:
+    from .visa import load_visa_money, lookup
+
+    settings = load_settings()
+    table = load_visa_money(settings.visa_path) if settings.visa_path else {}
+    if not table:
+        print("No config/visa_money.yaml found.", file=sys.stderr)
+        return 1
+    if args.country:
+        info = lookup(args.country, table)
+        if info is None:
+            print(f"No visa money info for '{args.country}'.", file=sys.stderr)
+            return 1
+        entries = [info]
+    else:
+        entries = sorted(table.values(), key=lambda i: i.country)
+
+    for info in entries:
+        print(f"\n== {info.country}")
+        print(f"   Visa:              {info.visa_type or '?'}")
+        print(f"   Money to show:     {info.proof_of_funds or '?'}")
+        print(f"   Bank statement:    {info.bank_statement or '?'}")
+        print(f"   Scholarship letter accepted: {info.scholarship_letter_accepted}")
+        if info.visa_fee:
+            print(f"   Visa fee:          {info.visa_fee}")
+        if info.notes:
+            print(f"   How to apply:      {info.notes}")
+        if info.source:
+            print(f"   Source:            {info.source}")
+    print("\nAlways confirm on the embassy checklist - amounts change every year.")
+    return 0
+
+
 def cmd_excel(args: argparse.Namespace) -> int:
     from pathlib import Path
 
@@ -163,6 +196,10 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("test-email", help="send a test email").set_defaults(func=cmd_test_email)
     sub.add_parser("checklist", help="print the documents you need").set_defaults(func=cmd_checklist)
     sub.add_parser("queries", help="show this week's search queries").set_defaults(func=cmd_queries)
+
+    p_visa = sub.add_parser("visa", help="bank statement / proof of funds rules per country")
+    p_visa.add_argument("country", nargs="?", help="e.g. Italy, Germany, UK")
+    p_visa.set_defaults(func=cmd_visa)
 
     p_excel = sub.add_parser("excel", help="build the Excel file from research/raw/*.json")
     p_excel.add_argument("--output", help="output .xlsx path")

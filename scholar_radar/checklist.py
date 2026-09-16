@@ -94,6 +94,17 @@ BASE_CHECKLIST: list[ChecklistItem] = [
         ["portfolio", "publication", "github"],
     ),
     ChecklistItem(
+        "funds", "Bank statement / proof of funds (for the visa)",
+        "Embassies ask you to prove you can pay for living costs. This is separate from admission.",
+        "Most countries accept a scholarship award letter instead (Germany, Italy, UK, Hungary, "
+        "Finland, Sweden...). Otherwise keep a stable bank balance in YOUR name for several months - "
+        "money deposited days before the appointment is refused. See the 'Money for your visa' "
+        "section of the email for your countries.",
+        "Start building the balance 6 months before the visa appointment.",
+        "Varies by country (e.g. Italy about EUR 10,180/year, Germany blocked account about EUR 11,900)",
+        ["bank", "proof of funds", "financial", "funds", "sponsor", "blocked account", "solvency"],
+    ),
+    ChecklistItem(
         "police", "Police character certificate",
         "Asked by some scholarships (e.g. China) and many visas.",
         "Apply through your provincial police service (e.g. Police Khidmat Markaz in Punjab).",

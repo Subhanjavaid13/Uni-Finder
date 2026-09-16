@@ -10,6 +10,7 @@ from typing import Any
 from .checklist import DocumentDemand
 from .matcher import days_until
 from .models import MatchResult, Opportunity
+from .visa import VisaMoney, lookup, summary_line
 
 COLORS = {"strong": "#16a34a", "possible": "#d97706", "excluded": "#9ca3af"}
 TRACK_TITLES = {
@@ -37,6 +38,7 @@ class ReportData:
     later: list[MatchResult]
     demand: list[DocumentDemand]
     other_docs: dict[str, list[str]]
+    visa_money: dict[str, VisaMoney] = field(default_factory=dict)
     stats: dict[str, Any] = field(default_factory=dict)
     errors: list[str] = field(default_factory=list)
     max_items: int = 15
@@ -84,6 +86,32 @@ def english_text(result: MatchResult) -> str:
     return f"{base}. {opp.english_notes}" if opp.english_notes else base
 
 
+def money_text(result: MatchResult, visa_money: dict[str, VisaMoney]) -> str:
+    """Do I need a bank statement for this one, and how much must I show?"""
+    opp = result.opportunity
+    parts = []
+    if opp.scholarship_covers_proof is True:
+        parts.append("The award letter counts as proof of funds")
+    elif opp.bank_statement_required is True:
+        parts.append("Bank statement required")
+    if opp.proof_of_funds_amount:
+        parts.append(f"show {opp.proof_of_funds_amount}")
+    info = lookup(opp.country, visa_money)
+    if info:
+        parts.append(summary_line(info))
+    return " | ".join(parts) or "Not stated - check the embassy checklist"
+
+
+def visa_rows(data: "ReportData") -> list[VisaMoney]:
+    """One entry per country you actually have matches in."""
+    seen: dict[str, VisaMoney] = {}
+    for result in data.active:
+        info = lookup(result.opportunity.country, data.visa_money)
+        if info and info.country not in seen:
+            seen[info.country] = info
+    return sorted(seen.values(), key=lambda i: i.country)
+
+
 def funding_badges(opp: Opportunity) -> list[tuple[str, bool | None]]:
     return [("Tuition", opp.covers_tuition), ("Stipend", opp.stipend), ("Housing", opp.housing),
             ("Travel", opp.travel), ("Insurance", opp.insurance)]
@@ -112,7 +140,8 @@ def _badge_html(label: str, value: bool | None) -> str:
             f'font-size:12px;display:inline-block">{mark} {_e(label)}</span>')
 
 
-def _card_html(result: MatchResult, today: date, status: str | None = None) -> str:
+def _card_html(result: MatchResult, today: date, status: str | None = None,
+               visa_money: dict[str, VisaMoney] | None = None) -> str:
     opp = result.opportunity
     color = COLORS[result.verdict]
     tag = ""
@@ -130,6 +159,7 @@ def _card_html(result: MatchResult, today: date, status: str | None = None) -> s
         rows.append(("Intake", opp.intake))
     if opp.min_gpa:
         rows.append(("Minimum GPA", opp.min_gpa))
+    rows.append(("Money for visa", money_text(result, visa_money or {})))
     table = "".join(
         f'<tr><td style="color:#6b7280;padding:2px 10px 2px 0;vertical-align:top;white-space:nowrap">{_e(k)}</td>'
         f'<td style="padding:2px 0">{_e(v)}</td></tr>' for k, v in rows
@@ -195,7 +225,8 @@ def build_html(data: ReportData) -> str:
     for track in ("no_ielts", "ielts", "unknown"):
         items = [r for r in data.new_results if r.english_track == track]
         if items:
-            body = "".join(_card_html(r, today, data.statuses.get(r.opportunity.id)) for r in items[:limit])
+            body = "".join(_card_html(r, today, data.statuses.get(r.opportunity.id), data.visa_money)
+                           for r in items[:limit])
             more = f"<p>...and {len(items) - limit} more.</p>" if len(items) > limit else ""
             out.append(_section_html(f"New & updated: {TRACK_TITLES[track]}", body + more))
 
@@ -223,6 +254,30 @@ def build_html(data: ReportData) -> str:
                  f'<th style="padding:6px">Score</th></tr>{rows}</table>'
                  f'<div style="font-size:12px;color:#6b7280">* estimated from previous years</div>')
         out.append(_section_html("All your current matches", table))
+
+    money = visa_rows(data)
+    if money:
+        accepted = {"yes": "Yes", "maybe": "Maybe", "unknown": "Not confirmed"}
+        body = "".join(
+            f'<tr style="border-top:1px solid #e5e7eb;vertical-align:top">'
+            f'<td style="padding:6px"><b>{_e(i.country)}</b></td>'
+            f'<td style="padding:6px">{_e(i.proof_of_funds or "?")}</td>'
+            f'<td style="padding:6px">{_e(i.bank_statement or "?")}</td>'
+            f'<td style="padding:6px;white-space:nowrap">{_e(accepted.get(i.scholarship_letter_accepted, "?"))}</td>'
+            f'<td style="padding:6px">{_e(i.visa_fee or "?")}</td></tr>'
+            for i in money
+        )
+        table = (f'<table style="font-size:13px;border-collapse:collapse;width:100%">'
+                 f'<tr style="text-align:left;color:#6b7280"><th style="padding:6px">Country</th>'
+                 f'<th style="padding:6px">Money you must show</th>'
+                 f'<th style="padding:6px">Bank statement?</th>'
+                 f'<th style="padding:6px">Scholarship letter accepted?</th>'
+                 f'<th style="padding:6px">Visa fee</th></tr>{body}</table>')
+        out.append(_section_html(
+            "Money for your visa (bank statement?)", table,
+            "A scholarship award letter replaces the bank statement in most countries. "
+            "Amounts change every year - confirm on the embassy checklist.",
+        ))
 
     rows = ""
     for d in data.demand:
@@ -273,7 +328,8 @@ def build_html(data: ReportData) -> str:
 
 # ---- plain text ------------------------------------------------------------------
 
-def _card_text(result: MatchResult, today: date, status: str | None) -> str:
+def _card_text(result: MatchResult, today: date, status: str | None,
+               visa_money: dict[str, VisaMoney] | None = None) -> str:
     opp = result.opportunity
     tag = f" [{status.upper()}]" if status in ("new", "updated") else ""
     badges = ", ".join(f"{l}: {'yes' if v else 'no' if v is False else '?'}" for l, v in funding_badges(opp))
@@ -284,6 +340,7 @@ def _card_text(result: MatchResult, today: date, status: str | None) -> str:
         f"  Deadline: {deadline_text(opp, today)}",
         f"  Application fee: {fee_text(opp)}",
         f"  English: {english_text(result)}",
+        f"  Money for visa: {money_text(result, visa_money or {})}",
     ]
     if result.reasons:
         lines.append("  Why it fits: " + "; ".join(result.reasons))
@@ -309,10 +366,18 @@ def build_text(data: ReportData) -> str:
         items = [r for r in data.new_results if r.english_track == track]
         if items:
             out += ["", f"== NEW & UPDATED: {TRACK_TITLES[track].upper()} =="]
-            out += [_card_text(r, today, data.statuses.get(r.opportunity.id)) for r in items[:limit]]
+            out += [_card_text(r, today, data.statuses.get(r.opportunity.id), data.visa_money)
+                    for r in items[:limit]]
     if data.opening_soon:
         out += ["", "== OPENING SOON =="]
         out += [f"- {r.opportunity.title}: around {fmt_date(r.opportunity.opens)}" for r in data.opening_soon[:limit]]
+    money = visa_rows(data)
+    if money:
+        out += ["", "== MONEY FOR YOUR VISA (BANK STATEMENT?) =="]
+        for i in money:
+            out.append(f"- {i.country}: show {i.proof_of_funds or '?'}")
+            out.append(f"    Bank statement: {i.bank_statement or '?'}"
+                       f" | Scholarship letter accepted: {i.scholarship_letter_accepted}")
     out += ["", "== DOCUMENTS YOU NEED =="]
     for d in data.demand:
         count = len(d.needed_by)

@@ -102,6 +102,7 @@ class Settings:
     seed_path: Path
     state_path: Path
     output_dir: Path
+    visa_path: Path | None = None
 
 
 def load_settings(config_dir: Path = CONFIG_DIR, data_dir: Path = DATA_DIR,
@@ -121,6 +122,7 @@ def load_settings(config_dir: Path = CONFIG_DIR, data_dir: Path = DATA_DIR,
         seed_path=config_dir / "scholarships_seed.yaml",
         state_path=data_dir / "state.json",
         output_dir=output_dir,
+        visa_path=config_dir / "visa_money.yaml",
     )
 
 

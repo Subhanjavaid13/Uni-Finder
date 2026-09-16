@@ -21,6 +21,7 @@ from .report import Reminder, ReportData, build_report
 from .seed import load_seed, roll_estimated_dates
 from .sources import discover_official, discover_rss, discover_search, is_relevant
 from .store import State
+from .visa import load_visa_money
 
 log = logging.getLogger(__name__)
 
@@ -206,6 +207,7 @@ def run(settings: Settings, options: RunOptions, today: date | None = None,
         today=today, new_results=new_results, statuses=statuses, reminders=reminders,
         opening_soon=opening_soon, active=active, later=later, demand=demand,
         other_docs=other_docs, stats=stats, errors=errors,
+        visa_money=load_visa_money(settings.visa_path) if settings.visa_path else {},
         max_items=int(profile.email.get("max_items_per_section", 15)),
     )
     subject, html_body, text_body = build_report(data)
