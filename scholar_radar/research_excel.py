@@ -429,9 +429,14 @@ def build_workbook(raw_dir: Path, out_path: Path, today: date | None = None,
 
     findings_path = raw_dir.parent / "key_findings.json"
     if findings_path.exists():
-        findings = json.loads(findings_path.read_text(encoding="utf-8"))
-        write_table(wb.create_sheet("Key Findings"), FINDING_COLUMNS,
-                    sorted(findings, key=lambda f: _text(f.get("priority"))))
+        try:
+            findings = json.loads(findings_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+            log.warning("Ignoring %s: %s", findings_path.name, exc)
+            findings = []
+        if findings:
+            write_table(wb.create_sheet("Key Findings"), FINDING_COLUMNS,
+                        sorted(findings, key=lambda f: _text(f.get("priority"))))
 
     top = sorted((p for p in programs if p["score"] >= top_threshold), key=_program_sort)
     italy = sorted((p for p in programs if _text(p.get("country")).lower() == "italy"), key=_location_sort)

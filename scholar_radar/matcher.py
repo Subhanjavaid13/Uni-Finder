@@ -103,7 +103,8 @@ def match(opp: Opportunity, profile: Profile, today: date) -> MatchResult:
 
     # ---- hard requirements -------------------------------------------------------
     country = (opp.country or "").lower()
-    if country and any(c in country for c in profile.excluded_countries):
+    # Whole-word match so excluding "UK" doesn't also exclude "Ukraine".
+    if country and any(re.search(rf"\b{re.escape(c)}\b", country) for c in profile.excluded_countries):
         exclusions.append(f"{opp.country} is in your excluded countries")
 
     if opp.degree_level in ("phd", "bachelors") and profile.degree_level == "masters":

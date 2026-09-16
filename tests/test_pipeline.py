@@ -98,8 +98,28 @@ def test_near_empty_official_page_is_reported_not_analysed(settings):
     assert any("almost no text" in e for e in summary.errors)
 
 
-def test_real_run_without_email_config_fails_and_keeps_state_unsaved(settings):
+def test_multi_programme_page_still_verifies_the_seed(settings):
+    """Catalogue pages return several programmes; the seed's own entry must still be matched."""
+    llm = FakeLLM({"is_scholarship_page": True, "opportunities": [
+        {"title": "Some other scholarship", "deadline": "2027-05-05"},
+        {"title": "Turkiye Burslari (Turkiye Scholarships) - Master's", "deadline": "2027-02-18"}]})
+    options = RunOptions(dry_run=True, save_state=True, use_rss=False, use_search=False)
+    run(settings, options, today=TODAY, llm=llm, fetcher=FakeFetcher({"https://tb.example": TB_PAGE}))
+    state = State(settings.state_path)
+    tb = next(o for o in state.all_opportunities() if o.seed_key == "turkiye_burslari")
+    assert tb.deadline == "2027-02-18" and tb.deadline_is_estimate is False
+    extra = [o.title for o in state.all_opportunities() if o.source != "seed"]
+    assert extra == ["Some other scholarship"], "the seed item must not be stored twice"
+
+
+def test_research_is_saved_before_emailing_and_news_is_repeated(settings):
+    """A failed email must not throw away the AI work; the news waits for the next email."""
     options = RunOptions(use_official=False, use_rss=False, use_search=False, use_ai=False)
     with pytest.raises(EmailError):
         run(settings, options, today=TODAY, fetcher=FakeFetcher({}))
-    assert not settings.state_path.exists()
+    assert settings.state_path.exists()
+    assert State(settings.state_path).pending_news(), "unsent news must be remembered"
+
+    dry = RunOptions(dry_run=True, use_official=False, use_rss=False, use_search=False, use_ai=False)
+    again = run(settings, dry, today=TODAY, fetcher=FakeFetcher({}))
+    assert again.stats["new_or_updated"] > 0, "news should be reported again until an email goes out"

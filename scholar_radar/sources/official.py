@@ -23,7 +23,11 @@ def discover_official(pages: list[dict[str, Any]], fetcher: Fetcher, state: Stat
     candidates: list[Candidate] = []
     errors: list[str] = []
     for cfg in pages:
-        url, name = cfg["url"], cfg.get("name", cfg["url"])
+        url = cfg.get("url")
+        name = cfg.get("name") or url or "unnamed source"
+        if not url:
+            errors.append(f"{name}: no url in config/sources.yaml")
+            continue
         page = fetcher.fetch_page(url, verify=cfg.get("verify_ssl", True))
         if page is None:
             errors.append(f"{name}: could not fetch {url}")

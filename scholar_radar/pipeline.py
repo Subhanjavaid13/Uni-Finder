@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from dataclasses import dataclass
 from datetime import date
 from pathlib import Path
@@ -17,7 +18,7 @@ from .llm import BaseLLM, get_llm
 from .matcher import days_until, match_all, only_work_experience_blocks
 from .models import Candidate, Opportunity
 from .report import Reminder, ReportData, build_report
-from .seed import load_seed
+from .seed import load_seed, roll_estimated_dates
 from .sources import discover_official, discover_rss, discover_search, is_relevant
 from .store import State
 
@@ -44,6 +45,28 @@ class RunSummary:
     email_sent: bool
     stats: dict[str, Any]
     errors: list[str]
+
+
+MIN_USABLE_CHARS = 200
+
+
+def _title_words(text: str) -> set[str]:
+    return {w for w in re.findall(r"[a-z]{4,}", (text or "").lower())}
+
+
+def best_seed_match(seed: Opportunity, found: list[Opportunity]) -> Opportunity | None:
+    """Pick the item on a page that is the seed scholarship itself (catalogue pages list many)."""
+    if len(found) == 1:
+        return found[0]
+    seed_words = _title_words(seed.title)
+    if not seed_words:
+        return None
+    best, best_score = None, 0.0
+    for opp in found:
+        score = len(seed_words & _title_words(opp.title)) / len(seed_words)
+        if score > best_score:
+            best, best_score = opp, score
+    return best if best_score >= 0.4 else None
 
 
 def _dedupe(candidates: list[Candidate]) -> list[Candidate]:
@@ -80,7 +103,7 @@ def run(settings: Settings, options: RunOptions, today: date | None = None,
     seeds = load_seed(settings.seed_path)
     seed_by_key = {s.seed_key: s for s in seeds if s.seed_key}
     for seed in seeds:
-        remember(state.apply_seed_overrides(seed))
+        remember(roll_estimated_dates(state.apply_seed_overrides(seed, today), today))
     stats["seed_scholarships"] = len(seeds)
 
     # 2. Discovery
@@ -107,34 +130,48 @@ def run(settings: Settings, options: RunOptions, today: date | None = None,
     stats["deferred_to_next_run"] = len(queue) - len(selected)
 
     # 3. Analyse pages
-    analysed = skipped = 0
+    analysed = skipped = unreadable = 0
     for cand in selected:
+        if llm is not None and llm.disabled:
+            log.warning("Disabling AI for the rest of this run after repeated failures")
+            stats["ai_gave_up"] = True
+            llm = None
+
         if cand.text is None:
             page = fetcher.fetch_page(cand.url)
             if page is not None:
                 cand.text = page.text
                 cand.title = cand.title or page.title
+        if len(cand.text or "") < MIN_USABLE_CHARS and len(cand.snippet or "") < MIN_USABLE_CHARS:
+            # Nothing to read (fetch failed / JavaScript page): never send an empty page to the AI.
+            unreadable += 1
+            continue
+
         blob = f"{cand.title} {cand.snippet} {(cand.text or '')[:8000]}"
         if cand.source != "official" and not is_relevant(blob, settings.sources.relevance_keywords or None):
             state.mark_seen(cand.url, today)
             skipped += 1
             continue
 
-        if cand.seed_key in seed_by_key and llm is None:
+        seed = seed_by_key.get(cand.seed_key or "")
+        if seed is not None and llm is None:
             # Keyword guesses are too rough to overwrite curated seed facts; wait for AI mode.
             continue
         found_opps = extract_opportunities(cand, llm, today)
         analysed += 1
-        if cand.seed_key in seed_by_key and len(found_opps) == 1:
-            if state.record_seed_findings(cand.seed_key, found_opps[0], today):
-                remember(state.apply_seed_overrides(seed_by_key[cand.seed_key]))
-        else:
-            for opp in found_opps:
-                opp.seed_key = None  # a separate programme found on the page
-                remember(opp)
+
+        seed_item = best_seed_match(seed, found_opps) if (seed and found_opps) else None
+        if seed_item is not None and state.record_seed_findings(cand.seed_key, seed_item, today):
+            remember(roll_estimated_dates(state.apply_seed_overrides(seed, today), today))
+        for opp in found_opps:
+            if opp is seed_item:
+                continue  # already merged into the seed entry
+            opp.seed_key = None  # a separate programme found on the page
+            remember(opp)
         state.mark_seen(cand.url, today)
     stats["pages_analysed"] = analysed
     stats["pages_skipped_irrelevant"] = skipped
+    stats["pages_unreadable"] = unreadable
 
     # 4. Match everything we know against the profile
     state.remove_expired(today)
@@ -148,13 +185,15 @@ def run(settings: Settings, options: RunOptions, today: date | None = None,
         left = days_until(r.opportunity.deadline, today)
         if left is None:
             continue
-        threshold = state.reminder_due(r.opportunity.id, left, thresholds)
+        threshold = state.reminder_due(r.opportunity.id, left, thresholds, r.opportunity.deadline)
         if threshold is not None:
             reminders.append(Reminder(r, left, threshold))
     reminders.sort(key=lambda rem: rem.days_left)
 
     opening_soon = [r for r in active
                     if (d := days_until(r.opportunity.opens, today)) is not None and 0 <= d <= OPENING_SOON_DAYS]
+    # News from an earlier run whose email never went out must not be lost.
+    statuses = {**state.pending_news(), **statuses}
     new_results = [r for r in active if r.opportunity.id in statuses]
     demand, other_docs = document_demand(active)
     stats["new_or_updated"] = len(new_results)
@@ -174,20 +213,31 @@ def run(settings: Settings, options: RunOptions, today: date | None = None,
     report_path.write_text(html_body, encoding="utf-8")
     (settings.output_dir / "latest_report.txt").write_text(text_body, encoding="utf-8")
 
-    # 6. Email (if sending fails, state is NOT saved so nothing is lost next run)
-    email_sent = False
+    # 6. Save the research BEFORE emailing, so a mail failure never wastes the AI quota.
+    #    Unsent news is remembered in `pending_news` and repeated in the next email.
+    save = options.save_state if options.save_state is not None else not options.dry_run
     has_news = bool(new_results or reminders)
-    if not options.dry_run and (has_news or profile.email.get("send_when_empty", True)):
+    should_email = not options.dry_run and (has_news or profile.email.get("send_when_empty", True))
+    if save:
+        state.prune_seen(today)
+        if should_email:
+            state.set_pending_news(statuses)  # cleared once the email is actually sent
+        else:
+            state.record_run({**stats, "email_sent": False, "errors": len(errors)})
+        state.save()
+
+    # 7. Email, then record that this news and these reminders have been delivered.
+    email_sent = False
+    if should_email:
         send_email(subject, html_body, text_body)
         email_sent = True
         for rem in reminders:
-            state.mark_reminder(rem.result.opportunity.id, rem.threshold, thresholds)
-
-    save = options.save_state if options.save_state is not None else not options.dry_run
-    if save:
-        state.prune_seen(today)
-        state.record_run({**stats, "email_sent": email_sent, "errors": len(errors)})
-        state.save()
+            state.mark_reminder(rem.result.opportunity.id, rem.threshold, thresholds,
+                                rem.result.opportunity.deadline)
+        if save:
+            state.clear_pending_news()
+            state.record_run({**stats, "email_sent": True, "errors": len(errors)})
+            state.save()
 
     return RunSummary(subject=subject, report_path=report_path, email_sent=email_sent,
                       stats=stats, errors=errors)

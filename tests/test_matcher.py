@@ -72,6 +72,14 @@ def test_hard_exclusions():
         assert any(expected in e for e in result.exclusions), (expected, result.exclusions)
 
 
+def test_excluded_countries_match_whole_words():
+    p = profile(target={"fields": ["Computer Science", "Artificial Intelligence"],
+                        "degree_level": "masters", "preferred_regions": ["Europe"],
+                        "excluded_countries": ["uk"]})
+    assert match(ideal(country="Ukraine"), p, TODAY).verdict != "excluded"
+    assert match(ideal(country="UK"), p, TODAY).verdict == "excluded"
+
+
 def test_ielts_track_depends_on_plans():
     opp = ideal(ielts_required=True, moi_accepted=None)
     assert english_track(opp) == "ielts"
