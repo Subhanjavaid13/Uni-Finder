@@ -108,14 +108,30 @@ def to_float(value: Any) -> float | None:
     return None
 
 
+DAY_OF_MONTH_RE = re.compile(
+    r"\d{4}-\d{1,2}-\d{1,2}"                      # 2027-01-15
+    r"|\d{1,2}[./-]\d{1,2}[./-]\d{2,4}"           # 15/01/2027
+    r"|\b\d{1,2}(?:st|nd|rd|th)?\s+[A-Za-z]{3,}"  # 15 January
+    r"|[A-Za-z]{3,}\s+\d{1,2}\b",                 # January 15
+    re.IGNORECASE,
+)
+
+
 def parse_date(value: Any) -> str | None:
     """Parse a date only if it contains an explicit 4-digit year."""
+    return parse_date_precise(value)[0]
+
+
+def parse_date_precise(value: Any) -> tuple[str | None, bool]:
+    """Returns (ISO date, is_estimate). "January 2027" -> ("2027-01-01", True)."""
     if not value or not isinstance(value, str) or not re.search(r"\b(19|20)\d{2}\b", value):
-        return None
+        return None, False
     try:
-        return dateparser.parse(value, dayfirst=False, default=datetime(2000, 1, 1)).date().isoformat()
+        parsed = dateparser.parse(value, dayfirst=False, default=datetime(2000, 1, 1)).date()
     except (ValueError, OverflowError):
-        return None
+        return None, False
+    # Without a day of month, dateutil invents the 1st - don't present that as exact.
+    return parsed.isoformat(), not bool(DAY_OF_MONTH_RE.search(value))
 
 
 def _clean_str(value: Any) -> str | None:
@@ -139,6 +155,7 @@ def normalize_item(item: dict[str, Any], candidate: Candidate) -> Opportunity:
     url = candidate.url
     if apply_url and apply_url.startswith("http") and candidate.source != "official":
         url = apply_url
+    deadline, deadline_is_estimate = parse_date_precise(item.get("deadline"))
 
     return Opportunity(
         title=_clean_str(item.get("title")) or candidate.title or candidate.url,
@@ -160,7 +177,8 @@ def normalize_item(item: dict[str, Any], candidate: Candidate) -> Opportunity:
         application_fee=fee if fee in FEE_VALUES else "unknown",
         application_fee_amount=_clean_str(item.get("application_fee_amount")),
         opens=parse_date(item.get("opens")),
-        deadline=parse_date(item.get("deadline")),
+        deadline=deadline,
+        deadline_is_estimate=deadline_is_estimate,
         intake=_clean_str(item.get("intake")),
         ielts_required=to_bool(item.get("ielts_required")),
         moi_accepted=to_bool(item.get("moi_accepted")),
@@ -247,8 +265,10 @@ def extract_opportunities(candidate: Candidate, llm: BaseLLM | None, today: date
     try:
         data = llm.complete_json(SYSTEM_PROMPT, build_prompt(candidate, text, today))
     except (LLMError, ValueError) as exc:
+        llm.note_failure()
         log.warning("AI extraction failed for %s (%s) - using keyword fallback", candidate.url, exc)
         return heuristic_extract(candidate)
+    llm.note_success()
 
     if not to_bool(data.get("is_scholarship_page")):
         return []

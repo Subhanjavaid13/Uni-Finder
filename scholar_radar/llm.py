@@ -18,8 +18,9 @@ from .config import env
 
 log = logging.getLogger(__name__)
 
-GEMINI_DEFAULT_MODEL = "gemini-2.5-flash"
-GEMINI_FALLBACK_MODEL = "gemini-flash-latest"
+GEMINI_DEFAULT_MODEL = "gemini-3.5-flash"
+# Tried in order when the chosen model is retired (404) or overloaded (503).
+GEMINI_FALLBACK_MODELS = ("gemini-flash-latest", "gemini-3.5-flash-lite", "gemini-3-flash-preview")
 
 
 class LLMError(RuntimeError):
@@ -41,6 +42,9 @@ def parse_json_text(text: str) -> dict[str, Any]:
     return value
 
 
+MAX_CONSECUTIVE_FAILURES = 3
+
+
 class BaseLLM:
     name = "base"
 
@@ -49,6 +53,18 @@ class BaseLLM:
         self.min_interval = min_interval
         self._last_call = 0.0
         self.calls = 0
+        self.failures = 0
+
+    @property
+    def disabled(self) -> bool:
+        """True once the API keeps failing (quota gone, outage) - stop wasting the run on it."""
+        return self.failures >= MAX_CONSECUTIVE_FAILURES
+
+    def note_success(self) -> None:
+        self.failures = 0
+
+    def note_failure(self) -> None:
+        self.failures += 1
 
     def _throttle(self) -> None:
         wait = self.min_interval - (time.monotonic() - self._last_call)
@@ -99,15 +115,25 @@ class GeminiLLM(BaseLLM):
         return self._post(url, {"x-goog-api-key": self.api_key}, body)
 
     def complete_json(self, system: str, prompt: str) -> dict[str, Any]:
-        try:
-            data = self._generate(self.model, system, prompt)
-        except LLMError as exc:
-            if "HTTP 404" in str(exc) and self.model != GEMINI_FALLBACK_MODEL:
-                log.warning("Model %s not found, switching to %s", self.model, GEMINI_FALLBACK_MODEL)
-                self.model = GEMINI_FALLBACK_MODEL
-                data = self._generate(self.model, system, prompt)
-            else:
-                raise
+        candidates = [self.model] + [m for m in GEMINI_FALLBACK_MODELS if m != self.model]
+        last_error: LLMError | None = None
+        data = None
+        for model in candidates:
+            try:
+                data = self._generate(model, system, prompt)
+            except LLMError as exc:
+                # 404 = model retired for this key, 503 = model overloaded; try the next one.
+                if "HTTP 404" not in str(exc) and "HTTP 503" not in str(exc):
+                    raise
+                last_error = exc
+                log.warning("Gemini model %s unavailable (%s) - trying next", model, str(exc)[:80])
+                continue
+            if model != self.model:
+                log.warning("Switched Gemini model to %s", model)
+                self.model = model  # remember for the rest of the run
+            break
+        if data is None:
+            raise last_error or LLMError("Gemini: no usable model")
         try:
             parts = data["candidates"][0]["content"]["parts"]
         except (KeyError, IndexError) as exc:

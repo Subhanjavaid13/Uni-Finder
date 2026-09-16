@@ -5,6 +5,7 @@ from scholar_radar.extract import (
     heuristic_extract,
     normalize_item,
     parse_date,
+    parse_date_precise,
 )
 from scholar_radar.llm import BaseLLM, LLMError, parse_json_text
 from scholar_radar.models import Candidate
@@ -42,6 +43,27 @@ def test_parse_date_requires_year():
     assert parse_date("15 January 2027") == "2027-01-15"
     assert parse_date("January 15") is None
     assert parse_date(None) is None
+
+
+def test_parse_date_marks_month_only_dates_as_estimates():
+    assert parse_date_precise("2027-01-15") == ("2027-01-15", False)
+    assert parse_date_precise("15 January 2027") == ("2027-01-15", False)
+    assert parse_date_precise("March 1, 2027") == ("2027-03-01", False)
+    # dateutil invents the 1st here - it must not look like a confirmed date
+    assert parse_date_precise("January 2027") == ("2027-01-01", True)
+    assert parse_date_precise("2027") == ("2027-01-01", True)
+    assert parse_date_precise("Fall 2027") == (None, False)  # unparseable stays empty
+
+
+def test_repeated_ai_failures_disable_the_client():
+    """Free-tier exhaustion must stop the run using AI instead of retrying every page."""
+    broken = FakeLLM(error=LLMError("gemini HTTP 429: quota"))
+    for _ in range(3):
+        extract_opportunities(cand(), broken, TODAY)
+    assert broken.disabled is True
+    working = FakeLLM({"is_scholarship_page": True, "opportunities": [{"title": "A"}]})
+    extract_opportunities(cand(), working, TODAY)
+    assert working.disabled is False
 
 
 def test_normalize_item_coerces_and_validates():
