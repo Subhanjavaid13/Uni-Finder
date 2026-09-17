@@ -38,4 +38,5 @@ def test_key_countries_answer_the_bank_statement_question():
     assert "sponsor" in uk.bank_statement.lower()
     italy = lookup("Italy", data)
     assert "10,179" in italy.proof_of_funds
-    assert "Show" in summary_line(italy) and "Bank statement" in summary_line(italy)
+    line = summary_line(italy)
+    assert line.startswith("At least EUR 10,179.85") and "Bank statement:" in line

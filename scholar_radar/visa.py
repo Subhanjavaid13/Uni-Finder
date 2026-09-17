@@ -77,9 +77,6 @@ def lookup(country: str | None, table: dict[str, VisaMoney]) -> VisaMoney | None
 
 def summary_line(info: VisaMoney) -> str:
     """One short line for an email card."""
-    parts = []
-    if info.proof_of_funds:
-        parts.append(f"Show {info.proof_of_funds}")
-    if info.bank_statement:
-        parts.append(f"Bank statement: {info.bank_statement}")
+    parts = [p for p in (info.proof_of_funds, f"Bank statement: {info.bank_statement}"
+                         if info.bank_statement else None) if p]
     return " | ".join(parts) or "Check the embassy checklist"

@@ -136,65 +136,126 @@ TEMPLATE = r"""<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ScholarRadar - master's, scholarships and visas</title>
 <style>
+/* Light, print-inspired palette: warm paper, deep navy ink, emerald + copper accents. */
 :root{
-  --bg:#f6f7f9; --card:#ffffff; --ink:#111827; --muted:#6b7280; --line:#e5e7eb;
-  --accent:#1d4ed8; --good:#15803d; --goodbg:#dcfce7; --warn:#b45309; --warnbg:#fef3c7;
-  --bad:#b91c1c; --badbg:#fee2e2; --chip:#f3f4f6;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#0b1020; --card:#151b2e; --ink:#e5e7eb; --muted:#9aa3b2; --line:#26304a;
-    --accent:#93b4ff; --good:#4ade80; --goodbg:#0f3320; --warn:#fbbf24; --warnbg:#3a2c08;
-    --bad:#f87171; --badbg:#3b1414; --chip:#1e263c;
-  }
+  color-scheme: light;
+  --paper:#faf7f2; --surface:#ffffff; --surface-2:#f3efe8; --zebra:#fcfaf6;
+  --ink:#17243b; --ink-2:#3d4a60; --muted:#6c7787;
+  --line:#e6dfd3; --line-2:#efe9de;
+  --primary:#0f5c4e; --primary-2:#0b463c; --primary-soft:#e4f0eb;
+  --copper:#a9632f; --copper-soft:#fbeee1;
+  --rose:#9a3b3b; --rose-soft:#f9e9e7;
+  --shadow:0 1px 2px rgba(23,36,59,.05), 0 10px 26px -18px rgba(23,36,59,.45);
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);
-  font:15px/1.5 -apple-system,Segoe UI,Roboto,Arial,sans-serif}
-.wrap{max-width:1180px;margin:0 auto;padding:16px}
-h1{font-size:20px;margin:6px 0}
-.sub{color:var(--muted);font-size:13px}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0}
-.tab{padding:8px 14px;border:1px solid var(--line);background:var(--card);border-radius:999px;
-  cursor:pointer;font-size:14px;color:var(--ink)}
-.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
-.filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--card);
-  border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:12px}
-input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);
-  border-radius:8px;padding:7px 9px}
-input[type=search]{flex:1 1 240px;min-width:180px}
-label.check{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);cursor:pointer}
-.count{color:var(--muted);font-size:13px;margin:6px 2px}
-.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(330px,1fr))}
-.card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--line);
-  border-radius:12px;padding:12px 14px}
-.card.top{border-left-color:var(--good)} .card.good{border-left-color:var(--warn)}
-.card.check{border-left-color:var(--muted)} .card.excluded{border-left-color:var(--bad);opacity:.75}
-.card h3{font-size:15px;margin:0 0 2px}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 var(--sans);
+  background-image:radial-gradient(1200px 400px at 50% -220px, #fff 0%, rgba(255,255,255,0) 70%)}
+.wrap{max-width:1200px;margin:0 auto;padding:22px 16px 56px}
+a{color:var(--primary)}
+a:hover{color:var(--primary-2)}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:6px}
+
+/* Masthead */
+.masthead{display:flex;align-items:flex-start;gap:14px;border-bottom:2px solid var(--ink);
+  padding-bottom:14px;margin-bottom:16px}
+.mark{flex:none;width:42px;height:42px;border-radius:12px;background:var(--primary);color:#fff;
+  display:grid;place-items:center;font:600 19px/1 var(--serif);letter-spacing:.5px;
+  box-shadow:var(--shadow)}
+h1{font:600 25px/1.15 var(--serif);margin:2px 0 4px;letter-spacing:.2px}
+.tagline{color:var(--muted);font-size:13px}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.stat{font-size:12.5px;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);
+  border-radius:999px;padding:4px 11px}
+.stat b{font:600 13px var(--sans);color:var(--primary)}
+.stat.updated{background:transparent;border-style:dashed;color:var(--muted)}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin:18px 0 14px}
+.tab{appearance:none;border:0;background:none;padding:10px 14px;cursor:pointer;color:var(--muted);
+  font:500 14px var(--sans);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab:hover{color:var(--ink)}
+.tab[aria-selected="true"]{color:var(--primary);border-bottom-color:var(--primary);font-weight:650}
+
+/* Filters */
+.filters{display:flex;gap:9px;flex-wrap:wrap;align-items:center;background:var(--surface);
+  border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-bottom:14px;
+  box-shadow:var(--shadow);position:sticky;top:10px;z-index:5}
+input,select{font:14px var(--sans);color:var(--ink);background:var(--surface);
+  border:1px solid var(--line);border-radius:9px;padding:8px 10px}
+input:hover,select:hover{border-color:#d8cfbe}
+input[type=search]{flex:1 1 250px;min-width:170px}
+select{cursor:pointer}
+label.check{display:flex;align-items:center;gap:7px;font-size:13.5px;color:var(--ink-2);cursor:pointer;
+  background:var(--surface-2);border-radius:9px;padding:7px 11px}
+input[type=checkbox]{accent-color:var(--primary);width:15px;height:15px;padding:0}
+.count{color:var(--muted);font-size:12.5px;margin:2px 2px 12px;text-transform:uppercase;
+  letter-spacing:.07em}
+
+/* Cards */
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+  align-items:start}
+.card{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--line-2);
+  border-radius:14px;padding:15px 16px;box-shadow:var(--shadow);transition:transform .12s ease,
+  box-shadow .12s ease}
+.card:hover{transform:translateY(-2px);box-shadow:0 2px 4px rgba(23,36,59,.06),0 18px 36px -22px rgba(23,36,59,.5)}
+.card.top{border-left-color:var(--primary)}
+.card.good{border-left-color:var(--copper)}
+.card.check{border-left-color:var(--line)}
+.card.excluded{border-left-color:var(--rose);background:#fdfbf9}
+.card h3{font:600 16.5px/1.3 var(--serif);margin:0 0 3px}
 .card h3 a{color:var(--ink);text-decoration:none}
-.card h3 a:hover{text-decoration:underline}
-.where{color:var(--muted);font-size:13px;margin-bottom:8px}
-.chips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
-.chip{font-size:11.5px;padding:2px 8px;border-radius:999px;background:var(--chip);color:var(--muted)}
-.chip.ok{background:var(--goodbg);color:var(--good)} .chip.no{background:var(--badbg);color:var(--bad)}
-.chip.mid{background:var(--warnbg);color:var(--warn)}
-.kv{font-size:13px;margin:3px 0} .kv b{color:var(--muted);font-weight:600}
-details{margin-top:8px} summary{cursor:pointer;color:var(--accent);font-size:13px}
-details .kv{margin:6px 0}
-table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);
-  border-radius:12px;overflow:hidden;font-size:13.5px}
-th,td{text-align:left;padding:9px 10px;border-top:1px solid var(--line);vertical-align:top}
-th{background:var(--chip);color:var(--muted);border-top:none;position:sticky;top:0}
-a{color:var(--accent)}
-.empty{color:var(--muted);padding:26px;text-align:center}
-.note{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13px;margin:10px 0}
-@media (max-width:560px){.wrap{padding:12px}.grid{grid-template-columns:1fr}}
+.card h3 a:hover{color:var(--primary);text-decoration:underline;text-underline-offset:3px}
+.where{color:var(--muted);font-size:12.8px;margin-bottom:10px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.chip{font:500 11.5px var(--sans);padding:3px 9px;border-radius:7px;background:var(--surface-2);
+  color:var(--ink-2);border:1px solid transparent}
+.chip.ok{background:var(--primary-soft);color:var(--primary-2);border-color:#cfe3db}
+.chip.mid{background:var(--copper-soft);color:var(--copper);border-color:#f0dcc6}
+.chip.no{background:var(--rose-soft);color:var(--rose);border-color:#f0d4d1}
+.kv{font-size:13.2px;margin:5px 0;color:var(--ink-2)}
+.kv b{color:var(--muted);font-weight:600;font-size:11.5px;text-transform:uppercase;
+  letter-spacing:.06em}
+details{margin-top:10px;border-top:1px dashed var(--line);padding-top:8px}
+summary{cursor:pointer;color:var(--primary);font:500 13px var(--sans);list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+ ";font-weight:700}
+details[open] summary::before{content:"- "}
+
+/* Tables */
+table{width:100%;border-collapse:separate;border-spacing:0;background:var(--surface);
+  border:1px solid var(--line);border-radius:14px;overflow:hidden;font-size:13.4px;
+  box-shadow:var(--shadow)}
+th,td{text-align:left;padding:11px 12px;border-top:1px solid var(--line-2);vertical-align:top}
+th{background:var(--surface-2);color:var(--ink);border-top:none;position:sticky;top:0;
+  font:600 11.5px var(--sans);text-transform:uppercase;letter-spacing:.07em}
+tr:nth-child(even) td{background:var(--zebra)}
+td .sub{color:var(--muted);font-size:12px;margin-top:2px}
+
+.empty{color:var(--muted);padding:34px;text-align:center;background:var(--surface);
+  border:1px dashed var(--line);border-radius:14px}
+.note{background:var(--copper-soft);color:#7d4a22;border-left:3px solid var(--copper);
+  border-radius:0 10px 10px 0;padding:11px 14px;font-size:13px;margin:0 0 14px}
+@media (max-width:620px){
+  .wrap{padding:18px 16px 40px}
+  .grid{grid-template-columns:1fr}
+  .filters{position:static}
+  h1{font-size:22px}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>ScholarRadar</h1>
-  <div class="sub" id="head"></div>
+  <header class="masthead">
+    <div class="mark" aria-hidden="true">SR</div>
+    <div>
+      <h1>ScholarRadar</h1>
+      <div class="tagline">Fully funded AI &amp; Computer Science master's &mdash; programmes, scholarships, visas</div>
+      <div class="stats" id="head"></div>
+    </div>
+  </header>
 
   <div class="tabs" role="tablist">
     <button class="tab" data-tab="programs" role="tab">Universities</button>
@@ -250,7 +311,11 @@ a{color:var(--accent)}
   <section id="panel-visa" hidden>
     <div class="note">A scholarship award letter replaces the bank statement in most countries.
       Amounts change every year - always confirm on the embassy checklist.</div>
-    <div class="filters"><input type="search" id="vq" placeholder="Search country..."></div>
+    <div class="filters">
+      <input type="search" id="vq" placeholder="Search country...">
+      <label class="check"><input type="checkbox" id="vmine" checked> Only countries I have matches in</label>
+    </div>
+    <div class="count" id="count-visa"></div>
     <div id="list-visa"></div>
   </section>
 
@@ -384,8 +449,11 @@ function renderFinds(){
 
 /* ---------- Visa & money ---------- */
 function renderVisa(){
-  const q = $("vq").value.toLowerCase().trim();
-  const rows = DATA.visa.filter(v => !q || v.country.toLowerCase().includes(q));
+  const q = $("vq").value.toLowerCase().trim(), mine = $("vmine").checked;
+  const rows = DATA.visa
+    .filter(v => (!q || v.country.toLowerCase().includes(q)) && (!mine || v.matches > 0))
+    .sort((a,b) => (b.matches||0) - (a.matches||0) || a.country.localeCompare(b.country));
+  $("count-visa").textContent = `${rows.length} of ${DATA.visa.length} countries`;
   const flag = {yes:["Yes","ok"], maybe:["Maybe","mid"], unknown:["Not confirmed",""]};
   $("list-visa").innerHTML = `<table><tr><th>Country</th><th>Money to show</th>
     <th>Bank statement?</th><th>Scholarship letter</th><th>Visa fee</th></tr>` +
@@ -417,16 +485,24 @@ document.querySelectorAll(".tab").forEach(b => b.onclick = () => showTab(b.datas
   $(id).addEventListener("input", renderPrograms);
 });
 ["fq","ftrack","fopen"].forEach(id => $(id).addEventListener("input", renderFinds));
-$("vq").addEventListener("input", renderVisa);
+["vq","vmine"].forEach(id => $(id).addEventListener("input", renderVisa));
 
 fillSelect($("country"), DATA.programs.map(p => p.country), "All countries");
 fillSelect($("field"), DATA.programs.map(p => p.field), "All fields");
 const strong = DATA.finds.filter(f => f.verdict !== "excluded").length;
-$("head").textContent = `${DATA.programs.length} programmes researched | ${strong} scholarships matching you `
-  + `| ${DATA.visa.length} countries with visa rules | updated ${DATA.generated}`;
+const freeFee = DATA.programs.filter(p => p.application_fee_free === true).length;
+const noIelts = DATA.programs.filter(p => p.moi_accepted === true || p.ielts_required === false).length;
+$("head").innerHTML = [
+  [DATA.programs.length, "programmes researched"],
+  [strong, "scholarships match you"],
+  [freeFee, "free to apply"],
+  [noIelts, "no IELTS needed"],
+  [DATA.visa.length, "countries with visa rules"],
+].map(([n, label]) => `<span class="stat"><b>${n}</b> ${esc(label)}</span>`).join("")
+  + `<span class="stat updated">updated ${esc(DATA.generated)}</span>`;
 renderPrograms(); renderFinds(); renderVisa(); renderDocs();
-let saved = "programs";
-try { saved = localStorage.getItem("sr-tab") || "programs"; } catch (e) {}
+let saved = new URLSearchParams(location.search).get("tab") || location.hash.slice(1);
+if (!saved) { try { saved = localStorage.getItem("sr-tab"); } catch (e) {} }
 showTab(["programs","finds","visa","docs"].includes(saved) ? saved : "programs");
 </script>
 </body>
